@@ -182,10 +182,10 @@ grant select on employee to public;
 
 create table expiresOn(
 	string varchar(255),
-	exDate date,
+	expiryDate date,
 	primary key (string, exDate),
 	foreign key (string) references item (string),
-	foreign key (exDate) references expirationDate (exDate)
+	foreign key (expiryDate) references expirationDate (exDate)
 	);
 grant select on expiresOn to public;
 
@@ -210,7 +210,7 @@ create table item(
 	category varchar(255),
 	itemdate date,
 	location varchar(255),
-	foreign key (itemdate) references expirationDate (itemdate)
+	foreign key (itemdate) references expirationDate (exDate)
 );
 
 grant select on item to public;
