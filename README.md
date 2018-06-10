@@ -2,7 +2,7 @@
 
 Repository for CPSC304 database project.
 
-Team:
-Samantha Cho - @samanthacho
-Zoe Fox - @xofeoz
-Kiki Hsieh - @misspixel
+Team: <br />
+Samantha Cho - @samanthacho <br />
+Zoe Fox - @xofeoz <br />
+Kiki Hsieh - @misspixel <br />
