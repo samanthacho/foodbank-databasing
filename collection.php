@@ -1,6 +1,6 @@
 <p>Welcome: Collection Shift</p>
 
-<p> Add donation below:</p>
+<p>Add monetary donation below:</p>
 <p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Amount&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -13,6 +13,17 @@
        <input type="text" name="insCol" size="20">
 <input type="submit" value="insert" name="moneyadd"></p>
 </form>
+
+<p>Add physical donation below:</p>
+<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Username</font></p>
+  <form method="POST" action="collection.php">
+    <p><input type="text" name="insIDname" size="20"><input type="text" name="insIDPh" size="12">
+      <input type="text" name="insIDItem" size="20"><input type="text" name="insIDU" size="12">
+    <input type="submit" value="insert" name="itemadd"></p>
+  </form>
 
 <?php
 
@@ -105,7 +116,23 @@ if ($db_conn) {
       executeBoundSQL("insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
       OCICommit($db_conn);
       echo "<br>Donation logged. Thank you.<br>";
-		}
+		} else
+    if (array_key_exists('itemadd', $_POST)) {
+      $tuple = array(
+        ":bind1" => uniqid(),
+        ":bind2" => $_POST['insIDname'],
+        ":bind3" => $_POST['insIDPh'],
+        ":bind4" => date("Y.m.d"),
+        ":bind5" => $_POST["insIDU"],
+        ":bind6" => $_POST["insIDItem"]
+      );
+      $alltuples = array (
+        $tuple
+      );
+      executeBoundSQL("insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
+      OCICommit($db_conn);
+      echo "<br>Donation logged. Thank you.<br>";
+    }
     OCILogoff($db_conn);
   } else {
   	echo "cannot connect";
