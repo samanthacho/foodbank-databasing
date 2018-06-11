@@ -139,8 +139,8 @@ if ($db_conn) {
 		executePlainSQL("create table employee (phone number, name varchar2(30), username varchar2(30), password varchar2(30), primary key (username))");
 
     executePlainSQL("create table money_collect (did varchar2(255), dname varchar2(30), dphone number,
-    moneydate varchar2(10), username varchar2(30) not null,
-    amount decimal, medium varchar2(30), primary key (did))");
+    moneydate date, username varchar2(30) not null,
+    amount decimal(10,2), medium varchar2(30), primary key (did))");
 
     executePlainSQL("create table purchase_make (pid varchar2(255), pamount decimal, username varchar2(30) not null, item varchar(30),
     primary key (pid))");
@@ -203,7 +203,7 @@ if ($db_conn) {
             ":bind1" => uniqid(),
             ":bind2" => $_POST['insDname'],
             ":bind3" => $_POST['insDPh'],
-            ":bind4" => date("h:i:sa"),
+            ":bind4" => date("Y.m.d"),
             ":bind5" => $_POST['insCol'],
             ":bind6" => $_POST['insAmount'],
             ":bind7" => $_POST['insMed']
