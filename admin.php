@@ -232,17 +232,23 @@ if ($db_conn) {
           // $result2 = executePlainSQL("select sum(pamount) from purchase_make");
           // $result3 = $result - $result2;
           $result = executePlainSQL(
-            "select sum(amount) - (select sum(pamount)
-            from purchase_make group by pamount)
-            from money_collect group by amount"
+            // "select sum(amount) - (select sum(pamount)
+            // from purchase_make group by pamount)
+            // from money_collect group by amount"
+            "select sum(amount) from money_collect group by amount"
           );
-          echo "<br>Money left<br>";
+          $result2 = executePlainSQL(
+            "select sum(pamount) from purchase_make group by pamount"
+          );
           while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
-            echo "<tr><td>" . $row["AMOUNT"] . "</td></tr>";
+            $sum = $row[0];
           }
-          echo "<br>Amount:<br>";
-          echo $result;
-          if ($result > 0) {
+          while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
+            $sum2 = $row[0];
+          }
+          // echo "<br>Amount:<br>";
+          // echo "<br>$sum - $_POST["insPAmount"]<br>";
+          if ($sum - $sum2 - $_POST["insPAmount"]>= 0) {
             echo "<br>Purchase Made<br>";
             $tuple = array (
               ":bind1" => uniqid(),
