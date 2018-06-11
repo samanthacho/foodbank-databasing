@@ -21,21 +21,6 @@ size="18"><input type="text" name="insUname" size="20"><input type="text" name="
 <!-- create a form to pass the values. See below for how to
 get the values-->
 
-<p> Add donation below:</p>
-<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Amount&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Medium&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Username</font></p>
-  <form method="POST" action="admin.php">
-  <!--refresh page when submit-->
-
-     <p><input type="text" name="insDname" size="20"><input type="text" name="insDPh" size="12">
-       <input type="text" name="insAmount" size="10"><input type="text" name="insMed" size="10">
-       <input type="text" name="insCol" size="20">
-<input type="submit" value="insert" name="moneyadd"></p>
-</form>
-
 <p> Record a purchase:</p>
 <p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Amount needed
@@ -52,6 +37,9 @@ get the values-->
 <form method="POST" action="admin.php">
     <p><input type="text" name="insUnameSearch" size="20">
       <input type = "submit" value="Get Report" name="empreport"></p>
+</form>
+<form method="POST" action="admin.php">
+<input type="submit" value="Add Donation" name="moneyadd"></p>
 </form>
 
 <?php
@@ -199,20 +187,24 @@ if ($db_conn) {
 				} else
         if (array_key_exists('moneyadd', $_POST)) {
           //executePlainSQL("insert into money_collect values (10, 'Sam', '6045061830', '019234', 24.3, 23.4, 'A', 24.43, 'credit')");
-          $tuple = array (
-            ":bind1" => uniqid(),
-            ":bind2" => $_POST['insDname'],
-            ":bind3" => $_POST['insDPh'],
-            ":bind4" => date("Y.m.d"),
-            ":bind5" => $_POST['insCol'],
-            ":bind6" => $_POST['insAmount'],
-            ":bind7" => $_POST['insMed']
-          );
-          $alltuples = array (
-            $tuple
-          );
-          executeBoundSQL("insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
-          OCICommit($db_conn);
+          // $tuple = array (
+          //   ":bind1" => uniqid(),
+          //   ":bind2" => $_POST['insDname'],
+          //   ":bind3" => $_POST['insDPh'],
+          //   ":bind4" => date("Y.m.d"),
+          //   ":bind5" => $_POST['insCol'],
+          //   ":bind6" => $_POST['insAmount'],
+          //   ":bind7" => $_POST['insMed']
+          // );
+          // $alltuples = array (
+          //   $tuple
+          // );
+          // executeBoundSQL("insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
+          // OCICommit($db_conn);
+          // header("location: collection.php");
+          if ($_POST && $success) {
+            header("location: collection.php");
+          }
         } else
         if (array_key_exists('empreport', $_POST)) {
           //$string = $_POST['insUnameSearch'];
