@@ -14,7 +14,6 @@
   Apache server can run it, and you must rename it to have a ".php"
   extension.  You must also change the username and password on the
   OCILogon below to be your ORACLE username and password -->
-
 <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
 <form method="POST" action="oracle-test.php">
 
@@ -38,6 +37,19 @@ size="18"><input type="text" name="insUname" size="20"><input type="text" name="
 <!-- create a form to pass the values. See below for how to
 get the values-->
 
+<p> Add donation below:</p>
+<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Amount&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Medium</font></p>
+  <form method="POST" action="oracle-test.php">
+  <!--refresh page when submit-->
+
+     <p><input type="text" name="insDname" size="6"><input type="text" name="insDPh" size="6">
+       <input type="text" name="insAmount" size="6"><input type="text" name="insMed" size="6">
+<input type="submit" value="insert" name="moneyadd"></p>
+</form>
+
 <p> Update the name by inserting the old and new values below: </p>
 <p><font size="2"> Old Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 New Name</font></p>
@@ -59,6 +71,7 @@ size="18">
 
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = OCILogon("ora_w7f1b", "a16236168", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+$dnum = 0;
 
 function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL command and executes it
 	//echo "<br>running ".$cmdstr."<br>";
@@ -142,11 +155,17 @@ if ($db_conn) {
 		// Drop old table...
 		echo "<br> dropping table <br>";
 		executePlainSQL("Drop table employee");
+    executePlainSQL("Drop table money_collect");
 
 		// Create new table...
 		echo "<br> creating new table <br>";
 		executePlainSQL("create table employee (phone number, name varchar2(30), username varchar2(30), password varchar2(30), primary key (username))");
-		OCICommit($db_conn);
+
+    echo "<br> creating newer table <br>";
+    executePlainSQL("create table money_collect (did number, dname varchar2(30), dphone number,
+    moneydate varchar2(10), startTime decimal not null, dlength decimal, letter char(1),
+    amount decimal, medium varchar2(30), primary key (did))");
+    OCICommit($db_conn);
 
 	} else
 		if (array_key_exists('insertsubmit', $_POST)) {
@@ -162,8 +181,7 @@ if ($db_conn) {
 			);
 			executeBoundSQL("insert into employee values (:bind1, :bind2, :bind3, :bind4)", $alltuples);
 			OCICommit($db_conn);
-
-		} else
+    } else
 			if (array_key_exists('updatesubmit', $_POST)) {
 				// Update tuple using data from user
 				$tuple = array (
@@ -199,7 +217,37 @@ if ($db_conn) {
 					// Delete data...
 					//executePlainSQL("delete from employee where nid=1");
 					OCICommit($db_conn);
-				}
+				} else
+        if (array_key_exists('moneyadd', $_POST)) {
+          //executePlainSQL("insert into money_collect values (10, 'Sam', '6045061830', '019234', 24.3, 23.4, 'A', 24.43, 'credit')");
+          $tuple = array (
+            ":bind1" => $dnum,
+            ":bind2" => $_POST['insDname'],
+            ":bind3" => $_POST['insDPh'],
+            ":bind4" => date("h:i:sa"),
+            ":bind5" => 10.2,
+            ":bind6" => 10.2,
+            ":bind7" => "A",
+            ":bind8" => $_POST['insAmount'],
+            ":bind9" => $_POST['insMed']
+          );
+          $alltuples = array (
+            $tuple
+          );
+          executeBoundSQL("insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7, :bind8, :bind9)", $alltuples);
+          $dnum = $dnum + 1;
+          OCICommit($db_conn);
+
+          $result = executePlainSQL("select * from money_collect");
+          echo "<br>Got data from table money_collect:<br>";
+        	echo "<table>";
+        	echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
+
+        	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        		echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+        	}
+        	echo "</table>";
+        }
 
 	if ($_POST && $success) {
 		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
@@ -208,6 +256,15 @@ if ($db_conn) {
 		// Select data...
 		$result = executePlainSQL("select * from employee");
 		printResult($result);
+    $result = executePlainSQL("select * from money_collect");
+    echo "<br>Got data from table money_collect:<br>";
+    echo "<table>";
+    echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
+
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+      echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+    }
+    echo "</table>";
 	}
 
 	//Commit to save changes...
