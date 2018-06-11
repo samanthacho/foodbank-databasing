@@ -1,19 +1,15 @@
-<p>Welcome! Please enter your credentials.</p>
-<p><font size="2">
-Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Password</font></p>
-<form method="POST" action="login.php">
-<!--refresh page when submit-->
-
-   <p><input type="text" name="insUser" size="20"><input type="text" name="insPass" size="18">
-<!--define two variables to pass the value-->
-
-<input type="submit" value="Login" name="login"></p>
-</form>
-
+<p>Welcome, Volunteer</p>
 <?php
 session_start();
-?>
+echo "Employee : " . $_COOKIE['username'] . "<br><br>";
+ ?>
+
+ <form method="POST" action="volunteer.php">
+   <input type="submit" value="Generate Inventory Report" name="inventory"></p>
+ </form>
+ <form method="POST" action="admin.php">
+ <input type="submit" value="Add Donation" name="moneyadd">
+ </form>
 
 <?php
 
@@ -89,24 +85,12 @@ function executeBoundSQL($cmdstr, $list) {
 // Connect Oracle...
 if ($db_conn) {
 
-  if (array_key_exists('login', $_POST)) {
-    $un = $_POST['insUser'];
-    $pw = $_POST['insPass'];
-    $result = executePlainSQL("select password from employee where username='$un'");
-    while($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-      $check_pw = $row[0];
-    }
-    if ($check_pw == $pw) {
-      setcookie("username", $un);
-      $admin = executePlainSQL("select username from admin where username='$un'");
-      $arow = OCI_Fetch_Array($admin, OCI_BOTH);
-      if ($arow[0] != NULL) {
-        header("location: admin.php");
-      } else {
-        header("location: volunteer.php");
-      }
-    } else {
-      echo "<br>Invalid Login<br>";
+  if (array_key_exists('inventory', $_POST)) {
+    // ...
+  } else
+  if (array_key_exists('moneyadd', $_POST)){
+    if ($_POST && $success) {
+      header("location: collection.php");
     }
   }
   OCILogoff($db_conn);
