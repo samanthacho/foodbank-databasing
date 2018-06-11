@@ -21,3 +21,7 @@ FROM purchase_make
 (SELECT sum(amount) FROM money_collect GROUP BY amount) -
 amount -
 (SELECT sum(pamount) FROM purchase_make GROUP BY pamount)
+
+// Amount Available: args; NONE
+(SELECT sum(amount) FROM money_collect GROUP BY amount) -
+(SELECT sum(pamount) FROM purchase_make GROUP BY pamount)
