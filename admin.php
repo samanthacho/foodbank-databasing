@@ -33,18 +33,26 @@ get the values-->
       <input type = "submit" value="Get Report" name="empreport"></p>
 </form>
 <form method="POST" action="admin.php">
-<input type="submit" value="Add Donation" name="moneyadd"></p>
+<input type="submit" value="Add Donation" name="moneyadd">
 </form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Get Employees" name="emplist">
+</form>
+
+<?php
+session_start();
+ ?>
 
 <?php
 
 //this tells the system that it's no longer just parsing
 //html; it's now parsing PHP
-session_start();
-$login = $_SESSION['user'];
-if ($_SESSION['user'])
-  echo "<br>Welcome:<br>";
-echo $login;
+$login = $_COOKIE['username'];
+if ($login) {
+  echo "Welcome <br>";
+  echo "Your Info : <br>";
+  echo "Username : " . $login . "<br>";
+}
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = OCILogon("ora_w7f1b", "a16236168", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 //$dnum = 0;
@@ -115,25 +123,7 @@ function executeBoundSQL($cmdstr, $list) {
 // Connect Oracle...
 if ($db_conn) {
 
-	if (array_key_exists('reset', $_POST)) {
-		// Drop old table...
-		executePlainSQL("Drop table employee");
-    executePlainSQL("Drop table money_collect");
-    executePlainSQL("Drop table purchase_make");
-
-		// Create new table...
-		executePlainSQL("create table employee (phone number, name varchar2(30), username varchar2(30), password varchar2(30), primary key (username))");
-
-    executePlainSQL("create table money_collect (did varchar2(255), dname varchar2(30), dphone number,
-    moneydate date, username varchar2(30) not null,
-    amount decimal(10,2), medium varchar2(30), primary key (did))");
-
-    executePlainSQL("create table purchase_make (pid varchar2(255), pamount decimal, username varchar2(30) not null, item varchar(30),
-    primary key (pid))");
-    OCICommit($db_conn);
-
-	} else
-		if (array_key_exists('insertsubmit', $_POST)) {
+	if (array_key_exists('insertsubmit', $_POST)) {
 			//Getting the values from user and insert data into the table
 			$tuple = array (
 				":bind1" => $_POST['insPhone'],
@@ -217,6 +207,17 @@ if ($db_conn) {
           }
           echo "</table>";
         } else
+        if (array_key_exists('emplist', $_POST)) {
+          $result = executePlainSQL("select name,phone from employee");
+          echo "<br>Staff List:<br>";
+          echo "<table>";
+          echo "<tr><th>Name</th><th>Phone</th></tr>";
+
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+            echo "<tr><td>" . $row["NAME"] . "</td><td>" . $row["PHONE"] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";
+        } else
         if (array_key_exists('purchase', $_POST)) {
           // $result = executePlainSQL("select sum(amount) from money_collect");
           // $result2 = executePlainSQL("select sum(pamount) from purchase_make");
@@ -253,16 +254,6 @@ if ($db_conn) {
             OCICommit($db_conn);
           } else echo "<br>Insufficient Funds<br>";
         }
-
-        $result = executePlainSQL("select name,phone from employee");
-        echo "<br>Staff List:<br>";
-        echo "<table>";
-        echo "<tr><th>Name</th><th>Phone</th></tr>";
-
-        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-          echo "<tr><td>" . $row["NAME"] . "</td><td>" . $row["PHONE"] . "</td></tr>"; //or just use "echo $row[0]"
-        }
-        echo "</table>";
 
         $result = executePlainSQL("select dname,moneydate,amount from money_collect");
         echo "<br>Recorded Donations:<br>";

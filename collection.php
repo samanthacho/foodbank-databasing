@@ -1,16 +1,19 @@
 <p>Welcome: Collection Shift</p>
+<?php
+session_start();
+echo "Employee : " . $_COOKIE['username'] . "<br><br>";
+ ?>
 
 <p>Add monetary donation below:</p>
 <p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Amount&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Medium&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Username</font></p>
+  </font></p>
   <form method="POST" action="collection.php">
 
      <p><input type="text" name="insDname" size="20"><input type="text" name="insDPh" size="12">
        <input type="text" name="insAmount" size="10"><input type="text" name="insMed" size="10">
-       <input type="text" name="insCol" size="20">
 <input type="submit" value="insert" name="moneyadd"></p>
 </form>
 
@@ -18,11 +21,15 @@
 <p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Username</font></p>
+  </font></p>
   <form method="POST" action="collection.php">
     <p><input type="text" name="insIDname" size="20"><input type="text" name="insIDPh" size="12">
-      <input type="text" name="insIDItem" size="20"><input type="text" name="insIDU" size="12">
+      <input type="text" name="insIDItem" size="20">
     <input type="submit" value="insert" name="itemadd"></p>
+  </form>
+
+  <form method="POST" action="collection.php">
+    <input type="submit" value="Return" name="return">
   </form>
 
 <?php
@@ -106,7 +113,7 @@ if ($db_conn) {
         ":bind2" => $_POST['insDname'],
         ":bind3" => $_POST['insDPh'],
         ":bind4" => date("Y.m.d"),
-        ":bind5" => $_POST['insCol'],
+        ":bind5" => $_COOKIE['username'],
         ":bind6" => $_POST['insAmount'],
         ":bind7" => $_POST['insMed']
       );
@@ -123,7 +130,7 @@ if ($db_conn) {
         ":bind2" => $_POST['insIDname'],
         ":bind3" => $_POST['insIDPh'],
         ":bind4" => date("Y.m.d"),
-        ":bind5" => $_POST["insIDU"],
+        ":bind5" => $_COOKIE['username'],
         ":bind6" => $_POST["insIDItem"]
       );
       $alltuples = array (
@@ -132,6 +139,16 @@ if ($db_conn) {
       executeBoundSQL("insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
       OCICommit($db_conn);
       echo "<br>Donation logged. Thank you.<br>";
+    } else
+    if (array_key_exists('return', $_POST)) {
+      $un = $_COOKIE['username'];
+      $admin = executePlainSQL("select username from admin where username='$un'");
+      $arow = OCI_Fetch_Array($admin, OCI_BOTH);
+      if ($arow[0] != NULL) {
+        header("location: admin.php");
+      } else {
+        header("location: volunteer.php");
+      }
     }
     OCILogoff($db_conn);
   } else {
