@@ -1,9 +1,3 @@
-<p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
-<form method="POST" action="admin.php">
-
-<p><input type="submit" value="Reset" name="reset"></p>
-</form>
-
 <p>Add volunteer below:</p>
 <p><font size="2"> Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -46,7 +40,11 @@ get the values-->
 
 //this tells the system that it's no longer just parsing
 //html; it's now parsing PHP
-
+session_start();
+$login = $_SESSION['user'];
+if ($_SESSION['user'])
+  echo "<br>Welcome:<br>";
+echo $login;
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = OCILogon("ora_w7f1b", "a16236168", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 //$dnum = 0;
