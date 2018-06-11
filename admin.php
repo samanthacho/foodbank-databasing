@@ -294,6 +294,17 @@ if ($db_conn) {
         }
         echo "</table>";
 
+        $result = executePlainSQL("select sum(pamount) from purchase_make");
+        $result2 = executePlainSQL("select sum(amount) from money_collect");
+        while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
+          $sum = $row[0];
+        }
+        while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
+          $sum2 = $row[0];
+        }
+        echo "<br>Funds Available:<br>";
+        echo $sum2-$sum;
+
 // 	if ($_POST && $success) {
 // 		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
 // 		header("location: admin.php");
