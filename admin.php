@@ -1,19 +1,3 @@
-<!--Test Oracle file for UBC CPSC304 2011 Winter Term 2
-  Created by Jiemin Zhang
-  Modified by Simona Radu
-  This file shows the very basics of how to execute PHP commands
-  on Oracle.
-  specifically, it will drop a table, create a table, insert values
-  update values, and then query for values
-
-  IF YOU HAVE A TABLE CALLED "employee" IT WILL BE DESTROYED
-
-  The script assumes you already have a server set up
-  All OCI commands are commands to the Oracle libraries
-  To get the file to work, you must place it somewhere where your
-  Apache server can run it, and you must rename it to have a ".php"
-  extension.  You must also change the username and password on the
-  OCILogon below to be your ORACLE username and password -->
 <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
 <form method="POST" action="admin.php">
 
@@ -38,10 +22,11 @@ size="18"><input type="text" name="insUname" size="20"><input type="text" name="
 get the values-->
 
 <p> Add donation below:</p>
-<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Amount&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Medium</font></p>
+  Medium&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Username</font></p>
   <form method="POST" action="admin.php">
   <!--refresh page when submit-->
 
@@ -50,6 +35,16 @@ get the values-->
        <input type="text" name="insCol" size="20">
 <input type="submit" value="insert" name="moneyadd"></p>
 </form>
+
+<p> Record a purchase:</p>
+<p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Amount needed
+</font></p>
+<form method = "POST" action="admin.php">
+  <p><input type="text" name="insItemName" size="15">
+    <input type="text" name="insPAmount" size="10">
+    <input type = "submit" value="Make Purchase" name="purchase"></p>
+  </form>
 
 <p> Find donations associated with employee:</p>
 <p><font size="2">Employee Username
@@ -131,35 +126,24 @@ function executeBoundSQL($cmdstr, $list) {
 
 }
 
-function printResult($result) { //prints results from a select statement
-	echo "<br>Got data from table employee:<br>";
-	echo "<table>";
-	echo "<tr><th>Phone</th><th>Name</th><th>Username</th></tr>";
-
-	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo "<tr><td>" . $row["PHONE"] . "</td><td>" . $row["NAME"] . "</td><td>" . $row["USERNAME"] . "</td></tr>"; //or just use "echo $row[0]"
-	}
-	echo "</table>";
-
-}
-
 // Connect Oracle...
 if ($db_conn) {
 
 	if (array_key_exists('reset', $_POST)) {
 		// Drop old table...
-		echo "<br> dropping table <br>";
 		executePlainSQL("Drop table employee");
     executePlainSQL("Drop table money_collect");
+    executePlainSQL("Drop table purchase_make");
 
 		// Create new table...
-		echo "<br> creating employee table <br>";
 		executePlainSQL("create table employee (phone number, name varchar2(30), username varchar2(30), password varchar2(30), primary key (username))");
 
-    echo "<br> creating money_collects table <br>";
     executePlainSQL("create table money_collect (did varchar2(255), dname varchar2(30), dphone number,
     moneydate varchar2(10), username varchar2(30) not null,
     amount decimal, medium varchar2(30), primary key (did))");
+
+    executePlainSQL("create table purchase_make (pid varchar2(255), pamount decimal, username varchar2(30) not null, item varchar(30),
+    primary key (pid))");
     OCICommit($db_conn);
 
 	} else
@@ -229,16 +213,6 @@ if ($db_conn) {
           );
           executeBoundSQL("insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
           OCICommit($db_conn);
-
-          $result = executePlainSQL("select * from money_collect");
-          echo "<br>Got data from table money_collect:<br>";
-        	echo "<table>";
-        	echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
-
-        	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-        		echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
-        	}
-        	echo "</table>";
         } else
         if (array_key_exists('empreport', $_POST)) {
           //$string = $_POST['insUnameSearch'];
@@ -252,7 +226,67 @@ if ($db_conn) {
             echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
           }
           echo "</table>";
+        } else
+        if (array_key_exists('purchase', $_POST)) {
+          // $result = executePlainSQL("select sum(amount) from money_collect");
+          // $result2 = executePlainSQL("select sum(pamount) from purchase_make");
+          // $result3 = $result - $result2;
+          $result = executePlainSQL(
+            "select sum(amount) - (select sum(pamount)
+            from purchase_make group by pamount)
+            from money_collect group by amount"
+          );
+          echo "<br>Money left<br>";
+          while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
+            echo "<tr><td>" . $row["AMOUNT"] . "</td></tr>";
+          }
+          echo "<br>Amount:<br>";
+          echo $result;
+          if ($result > 0) {
+            echo "<br>Purchase Made<br>";
+            $tuple = array (
+              ":bind1" => uniqid(),
+              ":bind2" => $_POST["insPAmount"],
+              ":bind3" => 'samcho',
+              ":bind4" => $_POST["insItemName"]
+            );
+            $alltuples = array (
+              $tuple
+            );
+            $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
+            OCICommit($db_conn);
+          } else echo "<br>Insufficient Funds<br>";
         }
+
+        $result = executePlainSQL("select name,phone from employee");
+        echo "<br>Staff List:<br>";
+        echo "<table>";
+        echo "<tr><th>Name</th><th>Phone</th></tr>";
+
+        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          echo "<tr><td>" . $row["NAME"] . "</td><td>" . $row["PHONE"] . "</td></tr>"; //or just use "echo $row[0]"
+        }
+        echo "</table>";
+
+        $result = executePlainSQL("select dname,moneydate,amount from money_collect");
+        echo "<br>Recorded Donations:<br>";
+        echo "<table>";
+        echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
+
+        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+        }
+        echo "</table>";
+
+        $result = executePlainSQL("select item, pamount from purchase_make");
+        echo "<br>Purchases Made:<br>";
+        echo "<table>";
+        echo "<tr><th>Item</th><th>Amount</th></tr>";
+
+        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+        }
+        echo "</table>";
 
 // 	if ($_POST && $success) {
 // 		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
