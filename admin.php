@@ -225,14 +225,24 @@ if ($db_conn) {
             OCICommit($db_conn);
           } else echo "<br>Insufficient Funds<br>";
         } else
-        if (array_key_exists('donation', $_POST)) {
+        if (array_key_exists('donations', $_POST)) {
           $result = executePlainSQL("select dname,moneydate,amount from money_collect");
-          echo "<br>Recorded Donations:<br>";
+          echo "<br>Recorded Monetary Donations:<br>";
           echo "<table>";
           echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
 
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-          echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+          echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";
+
+          $result = executePlainSQL("select name, itemdate, item from item_collects");
+          echo "<br>Recorded Physical Donations:<br>";
+          echo "<table>";
+          echo "<tr><th>Name</th><th>Date</th><th>Item</th></tr>";
+
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+            echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>";
           }
           echo "</table>";
         } else
