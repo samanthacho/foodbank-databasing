@@ -21,10 +21,14 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
 <p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Expiration Date (MM/DD/YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Location
   </font></p>
   <form method="POST" action="collection.php">
     <p><input type="text" name="insIDname" size="20"><input type="text" name="insIDPh" size="12">
-      <input type="text" name="insIDItem" size="20">
+      <input type="text" name="insIDItem" size="20"><input type="Text" name="insExp" size="12">
+      <input type="text" name="insCat" size="10"><input type="text" name="insLoc" size="10">
     <input type="submit" value="insert" name="itemadd"></p>
   </form>
 
@@ -125,6 +129,28 @@ if ($db_conn) {
       echo "<br>Donation logged. Thank you.<br>";
 		} else
     if (array_key_exists('itemadd', $_POST)) {
+      $ivar = $_POST['insIDItem'];
+      $curr = executePlainSQL("select name from item where name='$ivar'");
+      $irow = OCI_Fetch_Array($curr, OCI_BOTH);
+      if ($irow == NULL) {
+        $tuple = array(
+          ":bind1" => $_POST["insIDItem"],
+          ":bind2" => $_POST["insCat"],
+          ":bind3" => $_POST["insLoc"]
+        );
+        $alltuples = array(
+          $tuple
+        );
+        executeBoundSQL("insert into item values (:bind1,:bind2,:bind3), $alltuples");
+        OCICommit($db_conn);
+        $loc = $_POST["insLoc"];
+      } else {
+        $itemID = $_POST['insIDItem'];
+        $locfind = executePlainSQL("select location from item where name='$itemID'");
+        $locr = OCI_Fetch_Array($locfind, OCI_BOTH);
+        $loc = $locr[0];
+      }
+
       $tuple = array(
         ":bind1" => uniqid(),
         ":bind2" => $_POST['insIDname'],
@@ -139,6 +165,7 @@ if ($db_conn) {
       executeBoundSQL("insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
       OCICommit($db_conn);
       echo "<br>Donation logged. Thank you.<br>";
+      echo "Please put item in " . $loc . "<br>";
     } else
     if (array_key_exists('return', $_POST)) {
       $un = $_COOKIE['username'];
