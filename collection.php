@@ -29,25 +29,27 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
 
 <p>Item Add (Only add item if it is not already in database):</p>
 <p><font size="2">
-  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Expiration Date (MM/DD/YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Location
+  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </font></p>
 <form method="POST" action="collection.php">
-  <p><input type="text" name="insItemNm" size="20"><input type="text" name="insExp" size="12">
-    <input type="text" name="insCat" size="10"><input type="text" name="insLoc" size="10">
+  <p><input type="text" name="insItemNm" size="20">
+    <input type="text" name="insCat" size="25"><input type="text" name="insLoc" size="15">
     <input type="submit" value="insert" name="itemtodb"></p>
   </form>
 
 <p>Log item donation:</p>
 <p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Expiration Date (MM/DD/YYYY)
   </font></p>
   <form method="POST" action="collection.php">
     <p><input type="text" name="insIDname" size="20"><input type="text" name="insIDPh" size="12">
       <input type="text" name="insIDItem" size="20">
+      <input type = "text" name="insQuan" size="5"><input type="text" name="insExp" size="33">
     <input type="submit" value="insert" name="itemadd"></p>
   </form>
 
@@ -157,32 +159,60 @@ if ($db_conn) {
       echo "<br>Donation logged. Thank you.<br>";
     } else
     if (array_key_exists('itemadd', $_POST)) {
+      $quanstr = $_POST['insQuan'];
+      $quan = intval($quanstr);
       $ivar = $_POST['insIDItem'];
       $curr = executePlainSQL("select name from item where name='$ivar'");
       $irow = OCI_Fetch_Array($curr, OCI_BOTH);
       if ($irow[0] == NULL) {
         echo "<br>Please add item to database before logging donation. Donation not logged.<br>";
-      } else {
-        $itemID = $_POST['insIDItem'];
-        $locfind = executePlainSQL("select location from item where name='$itemID'");
-        $locr = OCI_Fetch_Array($locfind, OCI_BOTH);
-        $loc = $locr[0];
+      } else
+      if ($quanstr == NULL) {
+        echo "<br>Please enter quantity (integer)<br>";
+      } else
+      {
+        for ($x = 0; $x < $quan; $x++) {
+          $itemID = $_POST['insIDItem'];
+          $locfind = executePlainSQL("select location from item where name='$itemID'");
+          $locr = OCI_Fetch_Array($locfind, OCI_BOTH);
+          $loc = $locr[0];
 
-        $tuple = array(
-          ":bind1" => uniqid(),
-          ":bind2" => $_POST['insIDname'],
-          ":bind3" => $_POST['insIDPh'],
-          ":bind4" => date("Y.m.d"),
-          ":bind5" => $_COOKIE['username'],
-          ":bind6" => $_POST["insIDItem"]
-        );
-        $alltuples = array (
-          $tuple
-        );
-        executeBoundSQL("insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
-        OCICommit($db_conn);
-        echo "<br>Donation logged. Thank you.<br>";
-        echo "Please put item in " . $loc . "<br>";
+          $tuple = array(
+            ":bind1" => uniqid(),
+            ":bind2" => $_POST['insIDname'],
+            ":bind3" => $_POST['insIDPh'],
+            ":bind4" => date("Y.m.d"),
+            ":bind5" => $_COOKIE['username'],
+            ":bind6" => $_POST["insIDItem"]
+          );
+          $alltuples = array (
+            $tuple
+          );
+          executeBoundSQL("insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
+          OCICommit($db_conn);
+          $time = strtotime($_POST['insExp']);
+          $newformat = date('Y.m.d',$time);
+          $excheck = executePlainSQL("select exDate from expirationDate where exDate='$newformat'");
+          $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
+
+          if ($excheck1[0] == NULL) {
+            executePlainSQL("insert into expirationDate values ('$newformat')");
+            OCICommit($db_conn);
+          }
+          $tuple = array (
+            ":bind1" => uniqid(),
+            ":bind2" => $_POST['insIDItem'],
+            ":bind3" => $newformat
+          );
+          $alltuples = array (
+            $tuple
+          );
+          executeBoundSQL("insert into expiresOn values (:bind1, :bind2, :bind3)", $alltuples);
+          OCICommit($db_conn);
+
+          echo "<br>Donation logged. Thank you.<br>";
+          echo "Please put item in " . $loc . "<br>";
+        }
       }
     } else
     if (array_key_exists('return', $_POST)) {
@@ -206,14 +236,6 @@ if ($db_conn) {
       );
       executeBoundSQL("insert into item values(:bind1, :bind2,:bind3)", $alltuples);
       OCICommit($db_conn);
-      $time = strtotime($_POST['insExp']);
-      $newformat = date('Y.m.d',$time);
-      $excheck = executePlainSQL("select exDate from expirationDate where exDate='$newformat'");
-      $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
-      if ($excheck1[0] == NULL) {
-        executePlainSQL("insert into expirationDate values ('$newformat')");
-        OCICommit($db_conn);
-      }
     }
     OCILogoff($db_conn);
   } else {
