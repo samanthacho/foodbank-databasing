@@ -1,19 +1,14 @@
-<p>Welcome! Please enter your credentials.</p>
-<p><font size="2">
-Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Password</font></p>
-<form method="POST" action="login.php">
-<!--refresh page when submit-->
-
-   <p><input type="text" name="insUser" size="20"><input type="text" name="insPass" size="18">
-<!--define two variables to pass the value-->
-
-<input type="submit" value="Login" name="login"></p>
-</form>
-
 <?php
 session_start();
-?>
+$login = $_COOKIE['username'];
+if ($login) {
+  echo "Welcome " . $login . "<br><br>";
+}
+ ?>
+
+ <form method="POST" action="inventory.php">
+   <input type="submit" value="Return" name="return"></p>
+ </form>
 
 <?php
 
@@ -89,29 +84,30 @@ function executeBoundSQL($cmdstr, $list) {
 // Connect Oracle...
 if ($db_conn) {
 
-  if (array_key_exists('login', $_POST)) {
-    $un = $_POST['insUser'];
-    $pw = $_POST['insPass'];
-    $result = executePlainSQL("select password,username from employee where username='$un'");
-    while($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-      $check_pw = $row[0];
-      $check_un = $row[1];
-    }
-    if ($check_pw == $pw and $check_pw != NULL and $check_un != NULL) {
-      setcookie("username", $un);
-      $admin = executePlainSQL("select username from admin where username='$un'");
-      $arow = OCI_Fetch_Array($admin, OCI_BOTH);
-      if ($arow[0] != NULL) {
-        header("location: admin.php");
-      } else
-      if ($check_pw == $pw and $check_un == $un)
-      {
-        header("location: volunteer.php");
-      }
+  if (array_key_exists('return', $_POST)) {
+    $admincheck = executePlainSQL("select username from admin where username='$login'");
+    $arowcheck = OCI_Fetch_Array($admincheck, OCI_BOTH);
+    if ($arowcheck[0] != NULL) {
+      header("location: admin.php");
     } else {
-      echo "<br>Invalid Login<br>";
+      header("location: volunteer.php");
     }
+  } else
+  if (array_key_exists('logout', $_POST)) {
+    header("location: login.php");
   }
+
+  $result = executePlainSQL("select name, count(*), exdate from expiresOn group by name, exdate");
+  echo "<br>Inventory Report: <br>";
+  echo "<table>";
+  echo "<tr><th>Item</th><th>Quantity</th><th>Expiration Date</th></tr>";
+
+  while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+  echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
+  }
+  echo "</table>";
+
+
   OCILogoff($db_conn);
 } else {
   echo "cannot connect";
