@@ -134,14 +134,14 @@ if ($db_conn) {
       $irow = OCI_Fetch_Array($curr, OCI_BOTH);
       if ($irow == NULL) {
         $tuple = array(
-          ":bind1" => $_POST["insIDItem"],
-          ":bind2" => $_POST["insCat"],
-          ":bind3" => $_POST["insLoc"]
+          ":bind1" => $_POST['insIDItem'],
+          ":bind2" => $_POST['insCat'],
+          ":bind3" => $_POST['insLoc']
         );
         $alltuples = array(
           $tuple
         );
-        executeBoundSQL("insert into item values (:bind1,:bind2,:bind3), $alltuples");
+        executeBoundSQL("insert into item values(:bind1, :bind2,:bind3)", $alltuples);
         OCICommit($db_conn);
         $loc = $_POST["insLoc"];
       } else {
