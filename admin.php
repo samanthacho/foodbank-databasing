@@ -1,3 +1,10 @@
+<?php
+session_start();
+$login = $_COOKIE['username'];
+if ($login) {
+  echo "Welcome " . $login . "<br>";
+}
+ ?>
 <p>Add volunteer below:</p>
 <p><font size="2"> Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -38,21 +45,17 @@ get the values-->
 <form method="POST" action="admin.php">
   <input type="submit" value="Get Employees" name="emplist">
 </form>
-
-<?php
-session_start();
- ?>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Get Donations" name="donations">
+</form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Purchase Report" name="purchasereport">
+</form>
 
 <?php
 
 //this tells the system that it's no longer just parsing
 //html; it's now parsing PHP
-$login = $_COOKIE['username'];
-if ($login) {
-  echo "Welcome <br>";
-  echo "Your Info : <br>";
-  echo "Username : " . $login . "<br>";
-}
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = OCILogon("ora_w7f1b", "a16236168", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 //$dnum = 0;
@@ -150,60 +153,28 @@ if ($db_conn) {
 				OCICommit($db_conn);
 
 			} else
-				if (array_key_exists('dostuff', $_POST)) {
-					// Insert data into table...
-					executePlainSQL("insert into employee values (10, 'Frank')");
-					// Inserting data into table using bound variables
-					$list1 = array (
-						":bind1" => 6,
-						":bind2" => "All"
-					);
-					$list2 = array (
-						":bind1" => 7,
-						":bind2" => "John"
-					);
-					$allrows = array (
-						$list1,
-						$list2
-					);
-					executeBoundSQL("insert into employee values (:bind1, :bind2)", $allrows); //the function takes a list of lists
-					// Update data...
-					//executePlainSQL("update employee set nid=10 where nid=2");
-					// Delete data...
-					//executePlainSQL("delete from employee where nid=1");
-					OCICommit($db_conn);
-				} else
-        if (array_key_exists('moneyadd', $_POST)) {
-          //executePlainSQL("insert into money_collect values (10, 'Sam', '6045061830', '019234', 24.3, 23.4, 'A', 24.43, 'credit')");
-          // $tuple = array (
-          //   ":bind1" => uniqid(),
-          //   ":bind2" => $_POST['insDname'],
-          //   ":bind3" => $_POST['insDPh'],
-          //   ":bind4" => date("Y.m.d"),
-          //   ":bind5" => $_POST['insCol'],
-          //   ":bind6" => $_POST['insAmount'],
-          //   ":bind7" => $_POST['insMed']
-          // );
-          // $alltuples = array (
-          //   $tuple
-          // );
-          // executeBoundSQL("insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
-          // OCICommit($db_conn);
-          // header("location: collection.php");
+				if (array_key_exists('moneyadd', $_POST)) {
           if ($_POST && $success) {
             header("location: collection.php");
           }
         } else
         if (array_key_exists('empreport', $_POST)) {
-          //$string = $_POST['insUnameSearch'];
-          //$result = executeBoundSQL("select dname, amount from money_collect where username = :bind1", $alltuples);
           $result = executePlainSQL("select dname, amount from money_collect where username = '".$_POST['insUnameSearch']."'");
-          echo "<br>Got donation data for employee:<br>";
+          echo "<br>Monetary donation data for employee:<br>";
           echo "<table>";
           echo "<tr><th>Name</th><th>Amount</th></tr>";
 
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
             echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";
+          $result = executePlainSQL("select name, item from item_collects where username = '".$_POST['insUnameSearch']."'");
+          echo "<br>Item donation data for employee:<br>";
+          echo "<table>";
+          echo "<tr><th>Name</th><th>Item</th></tr>";
+
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+            echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
           }
           echo "</table>";
         } else
@@ -253,27 +224,29 @@ if ($db_conn) {
             $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
             OCICommit($db_conn);
           } else echo "<br>Insufficient Funds<br>";
+        } else
+        if (array_key_exists('donation', $_POST)) {
+          $result = executePlainSQL("select dname,moneydate,amount from money_collect");
+          echo "<br>Recorded Donations:<br>";
+          echo "<table>";
+          echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
+
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";
+        } else
+        if (array_key_exists('purchasereport', $_POST)) {
+          $result = executePlainSQL("select item, pamount from purchase_make");
+          echo "<br>Purchases Made:<br>";
+          echo "<table>";
+          echo "<tr><th>Item</th><th>Amount</th></tr>";
+
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";
         }
-
-        $result = executePlainSQL("select dname,moneydate,amount from money_collect");
-        echo "<br>Recorded Donations:<br>";
-        echo "<table>";
-        echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
-
-        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
-        }
-        echo "</table>";
-
-        $result = executePlainSQL("select item, pamount from purchase_make");
-        echo "<br>Purchases Made:<br>";
-        echo "<table>";
-        echo "<tr><th>Item</th><th>Amount</th></tr>";
-
-        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
-        }
-        echo "</table>";
 
         $result = executePlainSQL("select sum(pamount) from purchase_make");
         $result2 = executePlainSQL("select sum(amount) from money_collect");
