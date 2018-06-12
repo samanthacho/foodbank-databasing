@@ -1,7 +1,9 @@
-<p>Welcome, Volunteer</p>
 <?php
 session_start();
-echo "Employee : " . $_COOKIE['username'] . "<br><br>";
+$login = $_COOKIE['username'];
+if ($login) {
+  echo "Welcome " . $login . "<br><br>";
+}
  ?>
 
  <form method="POST" action="volunteer.php">
@@ -9,6 +11,9 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
  </form>
  <form method="POST" action="admin.php">
  <input type="submit" value="Add Donation" name="moneyadd">
+ </form>
+ <form method="POST" action="admin.php">
+   <input type="submit" value="Logout" name="logout">
  </form>
 
 <?php
@@ -86,12 +91,15 @@ function executeBoundSQL($cmdstr, $list) {
 if ($db_conn) {
 
   if (array_key_exists('inventory', $_POST)) {
-    // ...
+    header("location: inventory.php");
   } else
   if (array_key_exists('moneyadd', $_POST)){
     if ($_POST && $success) {
       header("location: collection.php");
     }
+  } else
+  if (array_key_exists('logout', $_POST)) {
+    header("location: login.php");
   }
   OCILogoff($db_conn);
 } else {

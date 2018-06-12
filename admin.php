@@ -51,6 +51,12 @@ get the values-->
 <form method="POST" action="admin.php">
   <input type="submit" value="Purchase Report" name="purchasereport">
 </form>
+<form method="POST" action="volunteer.php">
+  <input type="submit" value="Generate Inventory Report" name="inventory"></p>
+</form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Logout" name="logout">
+</form>
 
 <?php
 
@@ -256,6 +262,12 @@ if ($db_conn) {
           echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
           }
           echo "</table>";
+        } else
+        if (array_key_exists('logout', $_POST)) {
+          header("location: login.php");
+        } else
+        if (array_key_exists('inventory', $_POST)) {
+          header("location: inventory.php");
         }
 
         $result = executePlainSQL("select sum(pamount) from purchase_make");
@@ -269,25 +281,6 @@ if ($db_conn) {
         echo "<br>Funds Available:<br>";
         echo $sum2-$sum;
 
-// 	if ($_POST && $success) {
-// 		//POST-REDIRECT-GET -- See http://en.wikipedia.org/wiki/Post/Redirect/Get
-// 		header("location: admin.php");
-// 	} else {
-// //		Select data...
-// 		$result = executePlainSQL("select * from employee");
-// 		printResult($result);
-//     $result = executePlainSQL("select * from money_collect");
-//     echo "<br>Got data from table money_collect:<br>";
-//     echo "<table>";
-//     echo "<tr><th>Name</th><th>Date</th><th>Amount</th></tr>";
-//
-//     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-//       echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["MONEYDATE"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
-//     }
-//     echo "</table>";
-// 	}
-
-	//Commit to save changes...
 	OCILogoff($db_conn);
 } else {
 	echo "cannot connect";
