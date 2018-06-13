@@ -39,6 +39,25 @@ get the values-->
     <p><input type="text" name="insUnameSearch" size="20">
       <input type = "submit" value="Get Report" name="empreport"></p>
 </form>
+
+<p>Add shift and assign to employee:</p>
+<p><font size="2">
+  Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Time (MM/DD/YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Time (HH:i:a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Length (in hours):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Letter:
+</font></p>
+<form method="POST" action="admin.php">
+  <p><input type="text" name="insShiftType" size="30">
+    <input type="text" name="insDate" size="15">
+    <input type="text" name="insTime" size="15">
+    <input type="text" name="insLength" size="10">
+    <input type="text" name="insLetter" size="3">
+    <input type="submit" value="Assign Shift" name="shiftassign"></p>
+  </form>
+
+
 <form method="POST" action="admin.php">
 <input type="submit" value="Add Donation" name="moneyadd">
 </form>
@@ -53,6 +72,9 @@ get the values-->
 </form>
 <form method="POST" action="volunteer.php">
   <input type="submit" value="Generate Inventory Report" name="inventory"></p>
+</form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Funds Available" name="findfunds">
 </form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Logout" name="logout">
@@ -268,18 +290,50 @@ if ($db_conn) {
         } else
         if (array_key_exists('inventory', $_POST)) {
           header("location: inventory.php");
-        }
+        } else
+        if (array_key_exists('findfunds', $_POST)) {
+          $result = executePlainSQL("select sum(pamount) from purchase_make");
+          $result2 = executePlainSQL("select sum(amount) from money_collect");
+          while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
+            $sum = $row[0];
+          }
+          while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
+            $sum2 = $row[0];
+          }
+          echo "<br>Funds Available:<br>";
+          echo $sum2-$sum;
+        } else
+        if (array_key_exists('shiftassign', $_POST)){
+          $s = $_POST['insDate'];
+          $date = strtotime($s);
+          $sdate = date('Y-m-d', $date);
+          echo $sdate;
+          $t = $_POST['insTime'];
+          $time = strtotime($t);
+          $stime = date('H:i:s', $time);
 
-        $result = executePlainSQL("select sum(pamount) from purchase_make");
-        $result2 = executePlainSQL("select sum(amount) from money_collect");
-        while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
-          $sum = $row[0];
+          $slength = $_POST['insLength'];
+          $schar = $_POST['insLetter'];
+          $stype = $_POST['insShiftType'];
+          $result = executePlainSQL("select letter from shift where startTime='$stime' and length='$slength' and letter='$schar' and sdate='$sdate'");
+          $checkres = OCI_Fetch_Array($result, OCI_BOTH);
+          if ($checkres[0] != NULL) {
+            echo "Shift already assigned to different employee. Use a different letter, or change start time, date, or length.";
+          } else
+          {
+            $tuple = array (
+              ":bind1" => $stime,
+              ":bind2" => $_POST['insLength'],
+              ":bind3" => $schar,
+              ":bind4" => $sdate
+            );
+            $alltuples = array (
+              $tuple
+            );
+            executeBoundSQL("insert into shift values (:bind1, :bind2, :bind3, :bind4)", $alltuples);
+            OCICommit($db_conn);
+          }
         }
-        while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
-          $sum2 = $row[0];
-        }
-        echo "<br>Funds Available:<br>";
-        echo $sum2-$sum;
 
 	OCILogoff($db_conn);
 } else {
