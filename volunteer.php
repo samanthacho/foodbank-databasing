@@ -12,7 +12,7 @@ if ($login) {
  <form method="POST" action="admin.php">
  <input type="submit" value="Add Donation" name="moneyadd">
  </form>
-  <form method="POST" action="distribution.php">
+  <form method="POST" action="admin.php">
  <input type="submit" value="Distribute Items" name="dist">
  </form>
  <form method="POST" action="admin.php">
