@@ -112,6 +112,21 @@ WHERE username=uname
 
 // VOLUNTEER SCREEN
 
+// DISTRIBUTION SCREEN
+SELECT username 
+FROM admin 
+WHERE username=
+
+//Item Lookup: args(itemName)
+SELECT name
+FROM item
+WHERE name = itemName
+
+//
+SELECT name, count(*), exdate
+FROM expiresOn
+WHERE name= 
+GROUP BY name,exdate
 
 
 
