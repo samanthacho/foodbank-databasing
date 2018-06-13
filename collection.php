@@ -31,11 +31,13 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
 <p><font size="2">
   Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Nutritional Value (Enter non-nutritional if not food item)
 </font></p>
 <form method="POST" action="collection.php">
   <p><input type="text" name="insItemNm" size="20">
     <input type="text" name="insCat" size="25"><input type="text" name="insLoc" size="15">
+    <input type="text" name="insNut" size="30">
     <input type="submit" value="insert" name="itemtodb"></p>
   </form>
 
@@ -236,6 +238,20 @@ if ($db_conn) {
       );
       executeBoundSQL("insert into item values(:bind1, :bind2,:bind3)", $alltuples);
       OCICommit($db_conn);
+
+      $nutvar = $_POST['insNut'];
+      $nutcheck = executePlainSQL("select value from food_g where value='$nutvar'");
+      $nutrow = OCI_Fetch_Array($nutcheck, OCI_BOTH);
+      if ($nutrow == NULL) {
+        executePlainSQL("insert into food_g values ('$nutvar')");
+        OCICommit($db_conn);
+      }
+      $iname = $_POST['insItemNm'];
+      echo "Iname: " . $iname . "<br>";
+      echo "var :" . $nutvar . "<br>";
+      executePlainSQL("insert into f_has values('$nutvar', '$iname')");
+      echo "Submitted";
+      OCICommit($db_conn);
     }
     OCILogoff($db_conn);
   } else {
@@ -243,3 +259,4 @@ if ($db_conn) {
   	$e = OCI_Error(); // For OCILogon errors pass no handle
   	echo htmlentities($e['message']);
   }
+  ?>
