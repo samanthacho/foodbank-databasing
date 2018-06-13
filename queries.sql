@@ -1,3 +1,15 @@
+/*REQUIREMENTS  
+DONE: Selection + projection query
+DONE: update operation
+
+aggregation query : GROUP BY
+join query : JOIN/ inner /outer/etc
+division query :
+delete operation
+nested aggregation with group-by
+graphical user interface
+*/
+
 //ADMIN SCREEN
 
 // Generating report: args(uname)
