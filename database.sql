@@ -203,7 +203,7 @@ create table shift (
 grant select on shift to public;
 
 create table item(
-	string varchar primary key,
+	string varchar(255) primary key,
 	category varchar(255),
 	itemdate date,
 	location varchar(255),
