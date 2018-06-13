@@ -133,6 +133,3 @@ WHERE username=uname
 
 
 
-
-
-
