@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('America/Los_Angeles');
 $login = $_COOKIE['username'];
 if ($login) {
   echo "Welcome " . $login . "<br><br>";
@@ -9,13 +10,13 @@ if ($login) {
  <form method="POST" action="volunteer.php">
    <input type="submit" value="Generate Inventory Report" name="inventory"></p>
  </form>
- <form method="POST" action="admin.php">
+ <form method="POST" action="volunteer.php">
  <input type="submit" value="Add Donation" name="moneyadd">
  </form>
-  <form method="POST" action="admin.php">
+  <form method="POST" action="volunteer.php">
  <input type="submit" value="Distribute Items" name="dist">
  </form>
- <form method="POST" action="admin.php">
+ <form method="POST" action="volunteer.php">
    <input type="submit" value="Logout" name="logout">
  </form>
 
@@ -97,13 +98,48 @@ if ($db_conn) {
     header("location: inventory.php");
   } else
   if (array_key_exists('moneyadd', $_POST)){
-    if ($_POST && $success) {
+    $t = time();
+    $compt = (date("H:i", $t));
+    preg_match_all('!\d+!', $compt, $intarr);
+    $int = implode('',$intarr[0]);
+    $currdate = date("y-m-d", $t);
+    $result = executePlainSQL("select sdate from collection_work where startTime <= '$int' and
+    ('$int' - startTime)/100 <= any (select length from collection_work where startTime <= '$int' and '$login' = username and '$currdate' = sdate)");
+    $shiftFound = False;
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+      echo "Rows";
+      echo $row[0] . "<br>";
+      if ($currdate == $row[0]) {
+        $shiftFound = True;
+      }
+    }
+
+    if ($_POST && $success && $shiftFound) {
       header("location: collection.php");
+    } else {
+      echo "Not on shift. Cannot collect donations.";
     }
   } else
   if (array_key_exists('dist', $_POST)){
-    if ($_POST && $success) {
+    $t = time();
+    $compt = (date("H:i", $t));
+    preg_match_all('!\d+!', $compt, $intarr);
+    $int = implode('',$intarr[0]);
+    $currdate = date("y-m-d", $t);
+    $result = executePlainSQL("select sdate from distribution_work where startTime <= '$int' and
+    ('$int' - startTime)/100 <= any (select length from distribution_work where startTime <= '$int' and '$login' = username and '$currdate' = sdate)");
+    $shiftFound = False;
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+      echo "Rows";
+      echo $row[0] . "<br>";
+      if ($currdate == $row[0]) {
+        $shiftFound = True;
+      }
+    }
+    if ($_POST && $success && $shiftFound) {
       header("location: distribution.php");
+    } else {
+      echo "Not on shift. Cannot distribute inventory.";
     }
   } else
   if (array_key_exists('logout', $_POST)) {
