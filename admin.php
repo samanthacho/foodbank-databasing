@@ -62,6 +62,9 @@ get the values-->
 <input type="submit" value="Add Donation" name="moneyadd">
 </form>
 <form method="POST" action="admin.php">
+<input type="submit" value="Distribute Items" name="distribute">
+</form>
+<form method="POST" action="admin.php">
   <input type="submit" value="Get Employees" name="emplist">
 </form>
 <form method="POST" action="admin.php">
@@ -186,6 +189,11 @@ if ($db_conn) {
             header("location: collection.php");
           }
         } else
+        if (array_key_exists('distribute', $_POST)) {
+          if ($_POST && $success) {
+            header("location: distribution.php");
+          }
+        }else
         if (array_key_exists('empreport', $_POST)) {
           $result = executePlainSQL("select dname, amount from money_collect where username = '".$_POST['insUnameSearch']."'");
           echo "<br>Monetary donation data for employee:<br>";
