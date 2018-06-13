@@ -1,3 +1,5 @@
+<h1>Welcome to Distribution Shift</h1>
+
 <?php
 session_start();
 $login = $_COOKIE['username'];
@@ -6,18 +8,29 @@ if ($login) {
 }
  ?>
 
- <form method="POST" action="volunteer.php">
-   <input type="submit" value="Generate Inventory Report" name="inventory"></p>
- </form>
- <form method="POST" action="admin.php">
- <input type="submit" value="Add Donation" name="moneyadd">
- </form>
-  <form method="POST" action="distribution.php">
- <input type="submit" value="Distribute Items" name="dist">
- </form>
- <form method="POST" action="admin.php">
-   <input type="submit" value="Logout" name="logout">
- </form>
+ <p>Lookup the item to be distributed</p>
+<p><font size="3"> Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</font></p>
+<form method="POST" action="distribution.php">
+	<p><input type="text" name="insItem" size="20">
+		<input type="submit" value="lookup" name="lookitem"></p>
+	</form>
+
+
+<p> Decrement Item Quantity</p>
+<p><font size="3">  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></p>
+ <form method="POST" action="distribution.php">
+    <p><input type="text" name="insItem" size="20">
+      <input type = "text" name="insQuan" size="5">
+      <input type ="submit" value= "decdown" name="decItem"></p>
+  </form>
+
+   <form method="POST" action="distribution.php">
+    <input type="submit" value="Return" name="return">
+  </form>
+
 
 <?php
 
@@ -93,23 +106,54 @@ function executeBoundSQL($cmdstr, $list) {
 // Connect Oracle...
 if ($db_conn) {
 
-  if (array_key_exists('inventory', $_POST)) {
-    header("location: inventory.php");
-  } else
-  if (array_key_exists('moneyadd', $_POST)){
-    if ($_POST && $success) {
-      header("location: collection.php");
-    }
-  } else
-  if (array_key_exists('dist', $_POST)){
-    if ($_POST && $success) {
-      header("location: distribution.php");
+  if (array_key_exists('return', $_POST)) {
+    $admincheck = executePlainSQL("select username from admin where username='$login'");
+    $arowcheck = OCI_Fetch_Array($admincheck, OCI_BOTH);
+    if ($arowcheck[0] != NULL) {
+      header("location: admin.php");
+    } else {
+      header("location: volunteer.php");
     }
   } else
   if (array_key_exists('logout', $_POST)) {
     header("location: login.php");
   }
-  OCILogoff($db_conn);
+
+  if (array_key_exists('lookitem', $_POST)) {
+  	// check if it's in stock first
+  	$check1 = $_POST['insItem'];
+    $check2 = executePlainSQL("select name from item where name='$check1'");
+    $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
+    if ($check3[0] != NULL) {
+      echo "<br>Item in stock.<br>";
+    } else {
+      echo "<br>Item is not in stock.<br>";
+    }
+}
+
+if (array_key_exists('decItem', $_POST)) {
+	// TODO : decrement the quantity 
+  	$check1 = $_POST['insItem'];
+    $check2 = executePlainSQL("select name from item where name='$check1'");
+    $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
+    if ($check3[0] != NULL) {
+      echo "<br>Item in stock.<br>";
+      $quanStr = $_POST['insQuan'];
+      $quan = intval($quanStr);
+
+      $result = executePlainSQL("select sum(name) from item where name='$check1");
+       while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
+       	if($quan !=0){
+
+       	}
+            
+          }
+
+    } else {
+      echo "<br>Item is not in stock.<br>"; 
+    }
+}
+  
 } else {
   echo "cannot connect";
   $e = OCI_Error(); // For OCILogon errors pass no handle
