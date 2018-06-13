@@ -247,10 +247,8 @@ if ($db_conn) {
         OCICommit($db_conn);
       }
       $iname = $_POST['insItemNm'];
-      echo "Iname: " . $iname . "<br>";
-      echo "var :" . $nutvar . "<br>";
       executePlainSQL("insert into f_has values('$nutvar', '$iname')");
-      echo "Submitted";
+      echo "Item in database. Please continue with donation.";
       OCICommit($db_conn);
     }
     OCILogoff($db_conn);

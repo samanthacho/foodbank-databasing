@@ -307,22 +307,21 @@ if ($db_conn) {
           $s = $_POST['insDate'];
           $date = strtotime($s);
           $sdate = date('Y-m-d', $date);
-          echo $sdate;
           $t = $_POST['insTime'];
-          $time = strtotime($t);
-          $stime = date('H:i:s', $time);
 
           $slength = $_POST['insLength'];
           $schar = $_POST['insLetter'];
           $stype = $_POST['insShiftType'];
-          $result = executePlainSQL("select letter from shift where startTime='$stime' and length='$slength' and letter='$schar' and sdate='$sdate'");
+          $result = executePlainSQL("select letter from shift where startTime='$t' and length='$slength' and letter='$schar' and sdate='$sdate'");
           $checkres = OCI_Fetch_Array($result, OCI_BOTH);
           if ($checkres[0] != NULL) {
             echo "Shift already assigned to different employee. Use a different letter, or change start time, date, or length.";
           } else
           {
+            $insert = 2.2;
+            $letter = 'A';
             $tuple = array (
-              ":bind1" => $stime,
+              ":bind1" => $t,
               ":bind2" => $_POST['insLength'],
               ":bind3" => $schar,
               ":bind4" => $sdate
