@@ -58,6 +58,12 @@ get the values-->
 <form method="POST" action="admin.php">
   <input type="submit" value="Get Employees" name="emplist">
 </form>
+
+<form method="POST" action="admin.php">
+  Employee's Username: <input type="text" name="emUser" size="20">
+  <input type="submit" value="Delete Employees" name="removeEmp">
+</form>
+
 <form method="POST" action="admin.php">
   <input type="submit" value="Get Donations" name="donations">
 </form>
@@ -211,6 +217,16 @@ if ($db_conn) {
           }
           echo "</table>";
         } else
+        if (array_key_exists('removeEmp', $_POST)) {
+          $emusername = $_POST['emUser'];
+          if ($emusername== NULL){
+            echo "<br>Please enter a valid username.<br>";
+          }
+          if ($emusername != NULL){
+            $result = executePlainSQL("delete from employee where userName='$emusername'");
+            echo "<br>$emusername has been deleted<br>";
+          }
+        } else
         if (array_key_exists('purchase', $_POST)) {
           header("location: purchase.php");
           // $result = executePlainSQL(
@@ -262,13 +278,23 @@ if ($db_conn) {
           echo "</table>";
         } else
         if (array_key_exists('purchasereport', $_POST)) {
-          $result = executePlainSQL("select item, pamount from purchase_make");
+          /*$result = executePlainSQL("select item, pamount from purchase_make");
           echo "<br>Purchases Made:<br>";
           echo "<table>";
           echo "<tr><th>Item</th><th>Amount</th></tr>";
 
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
           echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";*/
+        
+        $result = executePlainSQL("select purchase_make.item, purchase_make.pamount, employee.username from purchase_make inner join employee on employee.userName = purchase_make.userName");
+          echo "<br>Purchases Made:<br>";
+          echo "<table>";
+          echo "<tr><th>Item</th><th>Amount</th><th>Buyer</th></tr>";
+
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td><td>" . $row["USERNAME"] . "</td></tr>"; //or just use "echo $row[0]"
           }
           echo "</table>";
         } else
