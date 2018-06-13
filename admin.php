@@ -22,16 +22,6 @@ size="18"><input type="text" name="insUname" size="20"><input type="text" name="
 <!-- create a form to pass the values. See below for how to
 get the values-->
 
-<p> Record a purchase:</p>
-<p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Amount needed
-</font></p>
-<form method = "POST" action="admin.php">
-  <p><input type="text" name="insItemName" size="15">
-    <input type="text" name="insPAmount" size="10">
-    <input type = "submit" value="Make Purchase" name="purchase"></p>
-  </form>
-
 <p> Find donations associated with employee:</p>
 <p><font size="2">Employee Username
 </font></p>
@@ -59,7 +49,9 @@ get the values-->
     <input type="submit" value="Assign Shift" name="shiftassign"></p>
   </form>
 
-
+<form method="POST" action="admin.php">
+  <input type="submit" value="Record a purchase" name="purchase">
+</form>
 <form method="POST" action="admin.php">
 <input type="submit" value="Add Donation" name="moneyadd">
 </form>
@@ -220,40 +212,33 @@ if ($db_conn) {
           echo "</table>";
         } else
         if (array_key_exists('purchase', $_POST)) {
-          // $result = executePlainSQL("select sum(amount) from money_collect");
-          // $result2 = executePlainSQL("select sum(pamount) from purchase_make");
-          // $result3 = $result - $result2;
-          $result = executePlainSQL(
-            // "select sum(amount) - (select sum(pamount)
-            // from purchase_make group by pamount)
-            // from money_collect group by amount"
-            "select sum(amount) from money_collect group by amount"
-          );
-          $result2 = executePlainSQL(
-            "select sum(pamount) from purchase_make group by pamount"
-          );
-          while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
-            $sum = $row[0];
-          }
-          while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
-            $sum2 = $row[0];
-          }
-          // echo "<br>Amount:<br>";
-          // echo "<br>$sum - $_POST["insPAmount"]<br>";
-          if ($sum - $sum2 - $_POST["insPAmount"]>= 0) {
-            echo "<br>Purchase Made<br>";
-            $tuple = array (
-              ":bind1" => uniqid(),
-              ":bind2" => $_POST["insPAmount"],
-              ":bind3" => 'samcho',
-              ":bind4" => $_POST["insItemName"]
-            );
-            $alltuples = array (
-              $tuple
-            );
-            $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
-            OCICommit($db_conn);
-          } else echo "<br>Insufficient Funds<br>";
+          header("location: purchase.php");
+          // $result = executePlainSQL(
+          //   "select sum(amount) from money_collect group by amount"
+          // );
+          // $result2 = executePlainSQL(
+          //   "select sum(pamount) from purchase_make group by pamount"
+          // );
+          // while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
+          //   $sum = $row[0];
+          // }
+          // while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
+          //   $sum2 = $row[0];
+          // }
+          // if ($sum - $sum2 - $_POST["insPAmount"]>= 0) {
+          //   echo "<br>Purchase Made<br>";
+          //   $tuple = array (
+          //     ":bind1" => uniqid(),
+          //     ":bind2" => $_POST["insPAmount"],
+          //     ":bind3" => 'samcho',
+          //     ":bind4" => $_POST["insItemName"]
+          //   );
+          //   $alltuples = array (
+          //     $tuple
+          //   );
+          //   $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
+          //   OCICommit($db_conn);
+          // } else echo "<br>Insufficient Funds<br>";
         } else
         if (array_key_exists('donations', $_POST)) {
           $result = executePlainSQL("select dname,moneydate,amount from money_collect");
@@ -322,8 +307,6 @@ if ($db_conn) {
             echo "Shift already assigned to different employee. Use a different letter, or change start time, date, or length.";
           } else
           {
-            $insert = 2.2;
-            $letter = 'A';
             $tuple = array (
               ":bind1" => $int,
               ":bind2" => $_POST['insLength'],
