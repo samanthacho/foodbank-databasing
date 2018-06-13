@@ -1,34 +1,27 @@
-<h1>Welcome to Distribution Shift</h1>
+<h1>Distribution Shift</h1>
 
 <?php
 session_start();
 $login = $_COOKIE['username'];
 if ($login) {
-  echo "Welcome " . $login . "<br><br>";
+  echo "Hope you have a good distribution shift, " . $login . "!<br><br>";
 }
  ?>
-
- <p>Lookup the item to be distributed</p>
-<p><font size="3"> Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-</font></p>
 <form method="POST" action="distribution.php">
-	<p><input type="text" name="insItem" size="20">
+	<p> Search the item to be distributed: <input type="text" name="insItem" size="20">
 		<input type="submit" value="lookup" name="lookitem"></p>
 	</form>
 
 
-<p> Decrement Item Quantity</p>
-<p><font size="3">  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</font></p>
+<p> Please Decrement the Item's Quantity</p>
  <form method="POST" action="distribution.php">
-    <p><input type="text" name="insItem" size="20">
-      <input type = "text" name="insQuan" size="5">
-      <input type ="submit" value= "Get Item Donations" name="donations"></p>
+    <p>Item: <input type="text" name="insItem" size="20">
+      Quantity:<input type = "text" name="insQuan" size="5">
+      <input type ="submit" value= "submit" name="donations"></p>
   </form>
 
    <form method="POST" action="distribution.php">
-    <input type="submit" value="Return" name="return">
+    <input type="submit" value="Return to Main Page" name="return">
   </form>
 
 
@@ -122,7 +115,7 @@ if ($db_conn) {
     $check2 = executePlainSQL("select name from item where name='$check1'");
     $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
     if ($check3[0] != NULL) {
-      echo "<br>Item in stock.<br>";
+      echo "<br>$check1's in stock. Details below.<br>";
       $result= executePlainSQL("select name, count(*), exdate from expiresOn where name='$check1' group by name, exdate");
   	echo "<table>";
   	echo "<tr><th>Item</th><th>Quantity</th><th>Expiration Date</th></tr>"; 
