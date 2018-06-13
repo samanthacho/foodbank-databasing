@@ -24,7 +24,7 @@ if ($login) {
  <form method="POST" action="distribution.php">
     <p><input type="text" name="insItem" size="20">
       <input type = "text" name="insQuan" size="5">
-      <input type ="submit" value= "decdown" name="decItem"></p>
+      <input type ="submit" value= "Get Item Donations" name="donations"></p>
   </form>
 
    <form method="POST" action="distribution.php">
@@ -126,22 +126,36 @@ if ($db_conn) {
     $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
     if ($check3[0] != NULL) {
       echo "<br>Item in stock.<br>";
+      $result= executePlainSQL("select name, count(*), exdate from expiresOn where name='$check1' group by name, exdate");
+  	echo "<table>";
+  	echo "<tr><th>Item</th><th>Quantity</th><th>Expiration Date</th></tr>"; 
+  	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+  	echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
+  }
+  echo "</table>";
+
     } else {
       echo "<br>Item is not in stock.<br>";
     }
 }
 
-if (array_key_exists('decItem', $_POST)) {
+if (array_key_exists('donations', $_POST)) {
 	// TODO : decrement the quantity 
   	$check1 = $_POST['insItem'];
-    $check2 = executePlainSQL("select name from item where name='$check1'");
-    $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
+  	$quan = $_POST['insItem'];
+  	$result2= executePlainSQL("select item, itemdate from item_collects where item='$check1'");
+  	$quanStr = $_POST['insQuan'];
+    $quan = intval($quanStr);
+  	while ($quan !=0){
+  		// delete one row at a time 
+  	}
+    $check3 = OCI_Fetch_Array($check2, OC_BOTH);
     if ($check3[0] != NULL) {
-      echo "<br>Item in stock.<br>";
-      $quanStr = $_POST['insQuan'];
-      $quan = intval($quanStr);
+    	while ($check3[0] != NULL) {
 
-      $result = executePlainSQL("select sum(name) from item where name='$check1");
+    	}
+      echo "<br>Item in stock.<br>";
+      
        while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
        	if($quan !=0){
 
