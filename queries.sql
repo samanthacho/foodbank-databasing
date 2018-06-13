@@ -1,3 +1,4 @@
+
 /*REQUIREMENTS  
 DONE: Selection + projection query
 DONE: update operation
@@ -9,7 +10,6 @@ delete operation
 nested aggregation with group-by
 graphical user interface
 */
-
 //ADMIN SCREEN
 
 // Generating report: args(uname)
@@ -51,7 +51,6 @@ FROM item_collects
 // Purchase list: args; NONE
 SELECT item, pamount
 FROM purchase_make
-
 
 // Making purchase: args(item, amount)
 (SELECT sum(amount) FROM money_collect GROUP BY amount) -
@@ -112,14 +111,6 @@ WHERE username=uname
 
 
 // VOLUNTEER SCREEN
-
-
-
-
-
-
-
-
 
 
 
