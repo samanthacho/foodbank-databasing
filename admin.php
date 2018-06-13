@@ -42,17 +42,17 @@ get the values-->
 
 <p>Add shift and assign to employee:</p>
 <p><font size="2">
-  Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Time (MM/DD/YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Time (HH:i:a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Length (in hours):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Date (DD MMM YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Length (in hours):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Shift Letter:
 </font></p>
 <form method="POST" action="admin.php">
-  <p><input type="text" name="insShiftType" size="30">
-    <input type="text" name="insDate" size="15">
-    <input type="text" name="insTime" size="15">
-    <input type="text" name="insLength" size="10">
+  <p><input type="text" name="insShiftType" size="20">
+    <input type="text" name="insDate" size="30">
+    <input type="text" name="insTime" size="20">
+    <input type="text" name="insLength" size="25">
     <input type="text" name="insLetter" size="3">
     <input type="submit" value="Assign Shift" name="shiftassign"></p>
   </form>
@@ -310,7 +310,6 @@ if ($db_conn) {
           $t = $_POST['insTime'];
           preg_match_all('!\d+!', $t, $intarr);
           $int = implode('',$intarr[0]);
-          echo $int;
 
           $slength = $_POST['insLength'];
           $schar = $_POST['insLetter'];
