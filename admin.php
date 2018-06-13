@@ -8,7 +8,7 @@ if ($login) {
 <p>Add volunteer below:</p>
 <p><font size="2"> Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Password</font></p>
 <form method="POST" action="admin.php">
 <!--refresh page when submit-->
@@ -45,8 +45,9 @@ get the values-->
   Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Shift Date (DD MMM YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Length (in hours):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Letter:
+  Shift Length (in hours)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Letter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Volunteer Username
 </font></p>
 <form method="POST" action="admin.php">
   <p><input type="text" name="insShiftType" size="20">
@@ -54,15 +55,13 @@ get the values-->
     <input type="text" name="insTime" size="20">
     <input type="text" name="insLength" size="25">
     <input type="text" name="insLetter" size="3">
+    <input type="text" name="insUsername" size="20">
     <input type="submit" value="Assign Shift" name="shiftassign"></p>
   </form>
 
 
 <form method="POST" action="admin.php">
 <input type="submit" value="Add Donation" name="moneyadd">
-</form>
-<form method="POST" action="admin.php">
-<input type="submit" value="Distribute Items" name="distribute">
 </form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Get Employees" name="emplist">
@@ -189,11 +188,6 @@ if ($db_conn) {
             header("location: collection.php");
           }
         } else
-        if (array_key_exists('distribute', $_POST)) {
-          if ($_POST && $success) {
-            header("location: distribution.php");
-          }
-        }else
         if (array_key_exists('empreport', $_POST)) {
           $result = executePlainSQL("select dname, amount from money_collect where username = '".$_POST['insUnameSearch']."'");
           echo "<br>Monetary donation data for employee:<br>";
@@ -341,6 +335,36 @@ if ($db_conn) {
             );
             executeBoundSQL("insert into shift values (:bind1, :bind2, :bind3, :bind4)", $alltuples);
             OCICommit($db_conn);
+          }
+          $uinput = $_POST['insUsername'];
+          $checkemp = executePlainSQL("select username from employee where username='$uinput'");
+          $emprow = OCI_Fetch_Array($checkemp, OCI_BOTH);
+          if ($emprow[0] == NULL) {
+            echo "Employee " . $uinput . "not in database. <br>";
+          } else {
+            $tuple = array (
+              ":bind1" => $int,
+              ":bind2" => $_POST['insLength'],
+              ":bind3" => $schar,
+              ":bind4" => $sdate,
+              ":bind5" => $uinput
+            );
+            $alltuples = array (
+              $tuple
+            );
+            if ($stype == 'Collection') {
+              executeBoundSQL("insert into collection_work values (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
+              OCICommit($db_conn);
+              echo "Shift assigned to " . $uinput . ".<br>";
+            } else
+            if ($stype == 'Distribution')
+            {
+              executeBoundSQL("insert into distribution_work values (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
+              OCICommit($db_conn);
+              echo "Shift assigned to " . $uinput . ".<br>";
+            } else {
+              echo "Unknown shift type. Please enter distribution or collection.";
+            }
           }
         }
 
