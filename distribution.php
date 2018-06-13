@@ -107,18 +107,15 @@ function executeBoundSQL($cmdstr, $list) {
 if ($db_conn) {
 
   if (array_key_exists('return', $_POST)) {
-    $admincheck = executePlainSQL("select username from admin where username='$login'");
-    $arowcheck = OCI_Fetch_Array($admincheck, OCI_BOTH);
-    if ($arowcheck[0] != NULL) {
-      header("location: admin.php");
-    } else {
-      header("location: volunteer.php");
-    }
-  } else
-  if (array_key_exists('logout', $_POST)) {
-    header("location: login.php");
-  }
-
+    $un = $_COOKIE['username'];
+      $admin = executePlainSQL("select username from admin where username='$un'");
+      $arow = OCI_Fetch_Array($admin, OCI_BOTH);
+      if ($arow[0] != NULL) {
+        header("location: admin.php");
+      } else {
+        header("location: volunteer.php");
+      }
+    } else
   if (array_key_exists('lookitem', $_POST)) {
   	// check if it's in stock first
   	$check1 = $_POST['insItem'];
