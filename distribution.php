@@ -141,25 +141,12 @@ if ($db_conn) {
         $findt = date('Y/m/d',$time);
         preg_match_all('~\d~', $findt, $intarr);
         $int = implode('',$intarr[0]);
-        echo $int . "<br>";
         $itemnm = $_POST['insDistItem'];
         $found = False;
         $idfetch = executePlainSQL("select id from expireson where name='$itemnm' and exdate='$int'");
         while ($row = OCI_Fetch_Array($idfetch, OCI_BOTH)) {
-          // echo $row[0] . "<br>";
-          // if ($found = False) {
-          //   $curr_id = $row[0];
-          //   $found = True;
-          // }
           $curr_id = $row[0];
         }
-        // $idrow = OCI_Fetch_Array($idfetch, OCI_BOTH);
-        // $curr_id = $idrow[0];
-        // if ($idrow == NULL) {
-        //   echo "NULL";
-        // }
-        // echo "curr_id is <br>";
-        // echo $curr_id . "<br>";
         executePlainSQL("delete from expireson where id = '$curr_id' and name = '$itemnm' and exdate = '$int'");
         OCICommit($db_conn);
         echo "Deletion executed.";

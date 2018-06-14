@@ -58,12 +58,6 @@ get the values-->
 <form method="POST" action="admin.php">
   <input type="submit" value="Get Employees" name="emplist">
 </form>
-
-<form method="POST" action="admin.php">
-  Employee's Username: <input type="text" name="emUser" size="20">
-  <input type="submit" value="Delete Employees" name="removeEmp">
-</form>
-
 <form method="POST" action="admin.php">
   <input type="submit" value="Get Donations" name="donations">
 </form>
@@ -232,32 +226,6 @@ if ($db_conn) {
         } else
         if (array_key_exists('purchase', $_POST)) {
           header("location: purchase.php");
-          // $result = executePlainSQL(
-          //   "select sum(amount) from money_collect group by amount"
-          // );
-          // $result2 = executePlainSQL(
-          //   "select sum(pamount) from purchase_make group by pamount"
-          // );
-          // while ($row = OCI_Fetch_Array($result,OCI_BOTH)) {
-          //   $sum = $row[0];
-          // }
-          // while ($row = OCI_Fetch_Array($result2,OCI_BOTH)) {
-          //   $sum2 = $row[0];
-          // }
-          // if ($sum - $sum2 - $_POST["insPAmount"]>= 0) {
-          //   echo "<br>Purchase Made<br>";
-          //   $tuple = array (
-          //     ":bind1" => uniqid(),
-          //     ":bind2" => $_POST["insPAmount"],
-          //     ":bind3" => 'samcho',
-          //     ":bind4" => $_POST["insItemName"]
-          //   );
-          //   $alltuples = array (
-          //     $tuple
-          //   );
-          //   $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
-          //   OCICommit($db_conn);
-          // } else echo "<br>Insufficient Funds<br>";
         } else
         if (array_key_exists('donations', $_POST)) {
           $result = executePlainSQL("select dname,moneydate,amount from money_collect");
@@ -281,16 +249,7 @@ if ($db_conn) {
           echo "</table>";
         } else
         if (array_key_exists('purchasereport', $_POST)) {
-          /*$result = executePlainSQL("select item, pamount from purchase_make");
-          echo "<br>Purchases Made:<br>";
-          echo "<table>";
-          echo "<tr><th>Item</th><th>Amount</th></tr>";
 
-          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-          echo "<tr><td>" . $row["ITEM"] . "</td><td>" . $row["PAMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
-          }
-          echo "</table>";*/
-        
         $result = executePlainSQL("select purchase_make.item, purchase_make.pamount, employee.username from purchase_make inner join employee on employee.userName = purchase_make.userName");
           echo "<br>Purchases Made:<br>";
           echo "<table>";
