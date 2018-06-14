@@ -60,9 +60,14 @@ get the values-->
       <input type="submit" value="Change Number" name="number"></p>
     </form>
 
+<p>Find Min/Max Donation Average:</p>
+<p><font size="2">
+  Enter 'Min' or 'Max'
+</font></p>
 <form method="POST" action="admin.php">
-  <input type="submit" value="Find max average donation" name="findd">
-</form>
+  <p><input type="text" name="insSpec" size="10">
+  <input type="submit" value="Find specified average donation" name="findd">
+</p></form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Record a purchase" name="purchase">
 </form>
@@ -356,10 +361,18 @@ if ($db_conn) {
           header("location: distribution.php");
         } else
         if (array_key_exists('findd', $_POST)) {
+          if ($_POST['insSpec'] == 'Max'){
           $result = executePlainSQL("select max(avg(amount)) from money_collect group by dname, dphone");
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
             echo "Maximum average donation by a single person is : $" . $row[0];
-          }
+          }}
+          else
+          if ($_POST['insSpec'] == 'Min') {
+            $result = executePlainSQL("select min(avg(amount)) from money_collect group by dname, dphone");
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+              echo "Minimum average donation by a single person is : $" . $row[0];
+            }
+          } else echo "Invalid input. Please enter Min or Max.";
         } else
         if (array_key_exists('number', $_POST)) {
           $newnumb = $_POST['insPhoneN'];
