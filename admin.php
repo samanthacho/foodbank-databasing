@@ -77,6 +77,9 @@ get the values-->
   <input type="submit" value="Funds Available" name="findfunds">
 </form>
 <form method="POST" action="admin.php">
+  <input type="submit" value="Distribute inventory" name="dist">
+</form>
+<form method="POST" action="admin.php">
   <input type="submit" value="Logout" name="logout">
 </form>
 
@@ -375,6 +378,9 @@ if ($db_conn) {
               echo "Unknown shift type. Please enter distribution or collection.";
             }
           }
+        } else
+        if (array_key_exists('dist', $_POST)) {
+          header("location: distribution.php");
         }
 
 	OCILogoff($db_conn);
