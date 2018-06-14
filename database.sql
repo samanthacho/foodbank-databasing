@@ -1,34 +1,18 @@
 set FOREIGN_KEY_CHECKS=0;
--- ERROR ; unique/primary keys in table referenced by foreign keys
-drop table item_Table; 
-drop table expirationDate;
-drop table employee;
-
-drop table expiresOn;
-
--- ERROR: table/view doesnt exist
-drop table money_collects;
-drop table item_collects;
-
--- ERROR ; unique/primary keys in table referenced by foreign keys
-drop table food_g;
-
+drop table money_collects; --
+drop table item_collects;--
 drop table f_has;
-
--- ERROR: table/view doesnt exist
-drop table collection_work;
-drop table distribution_work;
-
-
+drop table collection_work;--
+drop table distribution_work;--
 drop table purchase_makes;
+drop table volunteer_add;--
+drop table admin; -- pk in table referenced by fk
+drop table expiresOn;
+drop table food_g;
+drop table expirationDate; -- pk ref fk
+drop table item_Table; 
+drop table employee; -- pk ref by fk
 drop table shift;
-
--- ERROR: table/view doesnt exist
-drop table volunteer_add;
-
--- ERROR ; unique/primary keys in table referenced by foreign keys
-drop table admin;
-
 
 create table item_Table(
 	-- ERROR: ORA-00955: name is already used by an existing object
