@@ -22,11 +22,13 @@ size="18"><input type="text" name="insUname" size="20"><input type="text" name="
 <!-- create a form to pass the values. See below for how to
 get the values-->
 
-<p> Find donations associated with employee:</p>
-<p><font size="2">Employee Username
+<p> Find specified field associated with employee:</p>
+<p><font size="2">Employee Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Field
 </font></p>
 <form method="POST" action="admin.php">
     <p><input type="text" name="insUnameSearch" size="20">
+      <input type="text" name="insField" size="20">
       <input type = "submit" value="Get Report" name="empreport"></p>
 </form>
 
@@ -222,24 +224,36 @@ if ($db_conn) {
           }
         } else
         if (array_key_exists('empreport', $_POST)) {
-          $result = executePlainSQL("select dname, amount from money_collect where username = '".$_POST['insUnameSearch']."'");
-          echo "<br>Monetary donation data for employee:<br>";
-          echo "<table>";
-          echo "<tr><th>Name</th><th>Amount</th></tr>";
-
-          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-            echo "<tr><td>" . $row["DNAME"] . "</td><td>" . $row["AMOUNT"] . "</td></tr>"; //or just use "echo $row[0]"
+          $field = $_POST['insField'];
+          if ($field = "username" || $field="password" || $field="id" || $field="phone"){
+          $finder = $_POST['insField'];
+          $unametouse = $_POST['insUnameSearch'];
+          $result = executePlainSQL("select $finder from employee where username = '$unametouse'");
+          echo "<br>Specified data for employee:<br>";
+          echo "$finder" . " : ";
+          $rowuse = OCI_Fetch_Array($result, OCI_BOTH);
+          if ($rowuse[0] == NULL) {
+            echo "No data found.";
+          } else {
+            $printer = $rowuse[0];
+            echo $printer;
           }
-          echo "</table>";
-          $result = executePlainSQL("select name, item from item_collects where username = '".$_POST['insUnameSearch']."'");
-          echo "<br>Item donation data for employee:<br>";
-          echo "<table>";
-          echo "<tr><th>Name</th><th>Item</th></tr>";
 
-          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-            echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
-          }
-          echo "</table>";
+          // while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          //   echo "HERE";
+          //   echo $row[0] . "<br>"; //or just use "echo $row[0]"
+          // }
+        }
+          else echo "Not a valid field.";
+          // $result = executePlainSQL("select name, item from item_collects where username = '".$_POST['insUnameSearch']."'");
+          // echo "<br>Item donation data for employee:<br>";
+          // echo "<table>";
+          // echo "<tr><th>Name</th><th>Item</th></tr>";
+          //
+          // while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          //   echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
+          // }
+          // echo "</table>";
         } else
         if (array_key_exists('emplist', $_POST)) {
           $result = executePlainSQL("select name,phone from employee");
