@@ -1,6 +1,7 @@
+set FOREIGN_KEY_CHECKS=0 ;
 drop table money_collects;
 drop table item_collects;
-drop table is;
+drop table item_is;
 drop table item_distributes;
 drop table group;
 drop table has;
@@ -17,9 +18,18 @@ drop table expiresOn;
 drop table expirationDate;
 drop table shift;
 drop table item;
+drop table collection CASCADE CONSTRAINTS;
+drop table distribution CASCADE CONSTRAINTS;
+drop table shift_logDelete CASCADE CONSTRAINTS;
+drop table money_collects CASCADE CONSTRAINTS;
+drop table item_collects CASCADE CONSTRAINTS;
+drop table item_is CASCADE CONSTRAINTS;
+drop table item_distributes CASCADE CONSTRAINTS;
+drop table volunteer_add CASCADE CONSTRAINTS;
+drop table administrator CASCADE CONSTRAINTS;
 
-create table money_collects(	
-	did int,
+create table money_collects
+	(did integer not null PRIMARY KEY,
 	name varchar(40),
 	phone char(10),
 	moneydate date,
@@ -28,11 +38,9 @@ create table money_collects(
 	letter char(1) not null,
 	amount float(53),
 	medium varchar(255),
-	primary key (did),
-	foreign key (startTime,length,letter) references collection_shift (startTime,length,letter) ON DELETE CASCADE ON UPDATE CASCADE
-	);
+	foreign key (startTime,length,letter) references collection_shift (startTime,length,letter) ON DELETE CASCADE ON UPDATE CASCADE);
 
-grant select on money_collects to public;
+--grant select on money_collects to public;
 
 create table item_collects(
 	did int,
@@ -46,9 +54,9 @@ create table item_collects(
 	foreign key (startTime,length,letter) references collection_shift (startTime,length,letter) ON UPDATE CASCADE
 );
 
-grant select on item_collects to public;
+--grant select on item_collects to public;
 
-create table is(
+create table item_is(
 	string varchar(255),
 	did int,
 	primary key (string,did),
@@ -56,7 +64,7 @@ create table is(
 	foreign key (did) references item_donation (did) ON UPDATE CASCADE,
 );
 
-grant select on is to public;
+--grant select on item_is to public;
 
 create table item_distributes(
 	string varchar(255),
@@ -69,13 +77,13 @@ create table item_distributes(
 	foreign key(startTime,length,letter) references distribution_shift (startTime,length,letter) ON UPDATE CASCADE
 );
 
-grant select on item_distributes to public;
+--grant select on item_distributes to public;
 
 create table group (
 	value varchar(255) primary key
 );
 
-grant select on group to public;
+--grant select on group to public;
 
 create table has (
 	value varchar(255),
@@ -85,7 +93,7 @@ create table has (
 	foreign key(string) references item (string)
 );
 
-grant select on has to public;
+--grant select on has to public;
 
 create table collection (
 	startTime time,
@@ -95,7 +103,7 @@ create table collection (
 	foreign key(startTime,length,letter) references shift (startTime,length,letter) ON UPDATE CASCADE
 );
 
-grant select on collection to public;
+--grant select on collection to public;
 
 create table distribution(
 	startTime time,
@@ -105,7 +113,7 @@ create table distribution(
 	foreign key(startTime,length,letter) references shift (startTime,length,letter) ON UPDATE CASCADE
 );
 
-grant select on distribution to public;
+--grant select on distribution to public;
 
 create table adds(
 	string varchar(255),
@@ -115,7 +123,7 @@ create table adds(
 	foreign key(purchaseID) references purchase (purchaseID)
 );
 
-grant select on adds to public;
+--grant select on adds to public;
 
 create table purchase_makes(
 	purchaseID int primary key,
@@ -125,7 +133,7 @@ create table purchase_makes(
 	foreign key(userName) references admin (userName)
 );
 
-grant select on purchase_makes to public;
+--grant select on purchase_makes to public;
 
 create table shift_logDelete(
 	userName varchar(255) not null,
@@ -136,7 +144,7 @@ create table shift_logDelete(
 	foreign key (userName) references admin (userName) ON UPDATE CASCADE
 );
 
-grant select on shift_logDelete to public;
+--grant select on shift_logDelete to public;
 
 create table works(
 	startTime time,
@@ -149,16 +157,16 @@ create table works(
 
 );
 
-grant select on  works to public;
+--grant select on  works to public;
 
 create table volunteer_add(
 	userName varchar(255) primary key
 	a_userName varchar(255),
 	foreign key(userName)references employee (userName) ON UPDATE CASCADE,
-	foreign key(a_userName) references administrator(a_userName) ON UPDATE CASCADE
+	/*foreign key(a_userName) references administrator(a_userName) ON UPDATE CASCADE*/
 );
 
-grant select on volunteer_add to public;
+--grant select on volunteer_add to public;
 
 create table administrator(
 	userName varchar(255),
@@ -166,7 +174,7 @@ create table administrator(
 	foreign key (userName) references employee (userName) ON UPDATE CASCADE
 );
 
-grant select on administrator to public;
+--grant select on administrator to public;
 
 create table employee(
 	userName varchar(255) primary key,
@@ -175,7 +183,7 @@ create table employee(
 	password varchar(255),
 );
 
-grant select on employee to public;
+--grant select on employee to public;
 
 create table expiresOn(
 	string varchar(255),
@@ -184,23 +192,23 @@ create table expiresOn(
 	foreign key (string) references item (string),
 	foreign key (expiryDate) references expirationDate (exDate)
 	);
-grant select on expiresOn to public;
+--grant select on expiresOn to public;
 
 create table expirationDate(
 	exDate date primary key
 );
 
-grant select on expirationDate to public;
+--grant select on expirationDate to public;
 
 create table shift (
 	startTime time,
-	length float(53) ,
+	length float(53),
 	letter char(1),
 	primary key (startTime, length,letter)
 
 );
 
-grant select on shift to public;
+--grant select on shift to public;
 
 create table item(
 	string varchar(255) primary key,
@@ -210,7 +218,7 @@ create table item(
 	foreign key (itemdate) references expirationDate (exDate)
 );
 
-grant select on item to public;
+--grant select on item to public;
 
 -- INSERT money_collects data
 
@@ -227,12 +235,12 @@ insert into item_collects values(8,"Jack Ko", 2048573859,2017-08-11, 13:00:00, 2
 insert into item_collects values(9,"Liz Apple", 4739174824,2018-05-12, 14:30:00, 2.00, "A");
 insert into item_collects values(10,"Nick Brown ", 6045829104,2018-11-10, 15:00:00, 1.45, "A");
 
--- INSERT is data
-insert into is values("Bread", 3);
-insert into is values("Canned Pineapple", 5);
-insert into is values("Vegetable Oil", 8);
-insert into is values("Pasta", 9);
-insert into is values("Canned Beans", 10);
+-- INSERT item_is data
+insert into item_is values("Bread", 3);
+insert into item_is values("Canned Pineapple", 5);
+insert into item_is values("Vegetable Oil", 8);
+insert into item_is values("Pasta", 9);
+insert into item_is values("Canned Beans", 10);
 
 -- INSERT item_distributes data
 insert into item_distributes values("Bread", "Food","PantryC", 07:55:00, 00.50, "A");
@@ -326,11 +334,11 @@ insert into expireson values("Pasta", 2004-04-4);
 insert into expireson values("Canned Beans", 2023-12-07);
 
 -- INSERT expirationDate data
-insert into expirationDate values(2019-04-12);
-insert into expirationDate values(1983-01-29);
-insert into expirationDate values(2020-03-04);
-insert into expirationDate values(2004-04-4);
-insert into expirationDate values(2023-12-07);
+insert into expirationDate values(TO_DATE('2019-04-12', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('1983-01-29', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('2020-03-04', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('2004-04-4', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('2023-12-07', 'YYYY-MM-DD'));
 
 -- INSERT shfit data
 insert into shift values(10:45:00, 1.25, "A");
