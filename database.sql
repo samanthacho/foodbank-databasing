@@ -1,6 +1,7 @@
+set FOREIGN_KEY_CHECKS=0 ;
 drop table money_collects;
 drop table item_collects;
-drop table is;
+drop table item_is;
 drop table item_distributes;
 drop table group;
 drop table has;
@@ -161,7 +162,7 @@ create table volunteer_add(
 	foreign key(userName) references admin (userName) ON DELETE CASCADE
 );
 
-grant select on volunteer_add to public;
+--grant select on volunteer_add to public;
 
 create table admin (
 	userName varchar2(30),
@@ -186,12 +187,12 @@ insert into item_collects values(8,"Jack Ko", 2048573859,2017-08-11, 13:00:00, 2
 insert into item_collects values(9,"Liz Apple", 4739174824,2018-05-12, 14:30:00, 2.00, "A");
 insert into item_collects values(10,"Nick Brown ", 6045829104,2018-11-10, 15:00:00, 1.45, "A");
 
--- INSERT is data
-insert into is values("Bread", 3);
-insert into is values("Canned Pineapple", 5);
-insert into is values("Vegetable Oil", 8);
-insert into is values("Pasta", 9);
-insert into is values("Canned Beans", 10);
+-- INSERT item_is data
+insert into item_is values("Bread", 3);
+insert into item_is values("Canned Pineapple", 5);
+insert into item_is values("Vegetable Oil", 8);
+insert into item_is values("Pasta", 9);
+insert into item_is values("Canned Beans", 10);
 
 -- INSERT item_distributes data
 insert into item_distributes values("Bread", "Food","PantryC", 07:55:00, 00.50, "A");
@@ -278,18 +279,18 @@ insert into employee values ("volunteer3", 6049402281, "Test Volun3", "PasSword"
 insert into employee values ("volunteer4", 6041111111, "Test Volun4", "PassWord");
 
 -- INSERT expireson data
-insert into expireson values("Bread", 2019-04-12);
-insert into expireson values("Linen", 1983-01-29);
-insert into expireson values("Vegetable Oil", 2020-03-04);
-insert into expireson values("Pasta", 2004-04-4);
-insert into expireson values("Canned Beans", 2023-12-07);
+insert into expireson values("Bread", TO_DATE('2019-04-12', 'YYYY-MM-DD'));
+insert into expireson values("Linen", TO_DATE('1983-01-29', 'YYYY-MM-DD'));
+insert into expireson values("Vegetable Oil", TO_DATE('2020-03-04', 'YYYY-MM-DD'));
+insert into expireson values("Pasta", TO_DATE('2004-04-4', 'YYYY-MM-DD'));
+insert into expireson values("Canned Beans", TO_DATE('2023-12-07', 'YYYY-MM-DD'));
 
 -- INSERT expirationDate data
-insert into expirationDate values(2019-04-12);
-insert into expirationDate values(1983-01-29);
-insert into expirationDate values(2020-03-04);
-insert into expirationDate values(2004-04-4);
-insert into expirationDate values(2023-12-07);
+insert into expirationDate values(TO_DATE('2019-04-12', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('1983-01-29', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('2020-03-04', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('2004-04-4', 'YYYY-MM-DD'));
+insert into expirationDate values(TO_DATE('2023-12-07', 'YYYY-MM-DD'));
 
 -- INSERT shfit data
 insert into shift values(10:45:00, 1.25, "A");
@@ -300,8 +301,8 @@ insert into shift values(14:30:00, 2.15, "A");
 
 
 -- INSERT item data
-insert into item values("Bread", "Food", 2019-04-12, "PantryC");
-insert into item values("Linen", "Other", 1983-01-29, "PantryB");
-insert into item values("Vegetable Oil", "Food", 2020-03-04, "PantryA");
-insert into item values("Pasta", "Food", 2004-04-4, "PantryA");
-insert into item values("Canned Beans", "Food", 2023-12-07, "PantryA");
+insert into item values("Bread", "Food", TO_DATE('2019-04-12', 'YYYY-MM-DD'), "PantryC");
+insert into item values("Linen", "Other", TO_DATE('1983-01-29', 'YYYY-MM-DD'), "PantryB");
+insert into item values("Vegetable Oil", "Food", TO_DATE('2020-03-04', 'YYYY-MM-DD'), "PantryA");
+insert into item values("Pasta", "Food", TO_DATE('2004-04-4', 'YYYY-MM-DD'), "PantryA");
+insert into item values("Canned Beans", "Food", TO_DATE('2023-12-07', 'YYYY-MM-DD'), "PantryA");
