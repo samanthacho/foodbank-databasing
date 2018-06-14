@@ -327,11 +327,11 @@ insert into employee values ("volunteer3", 6049402281, "Test Volun3", "PasSword"
 insert into employee values ("volunteer4", 6041111111, "Test Volun4", "PassWord");
 
 -- INSERT expireson data
-insert into expireson values("Bread", 2019-04-12);
-insert into expireson values("Linen", 1983-01-29);
-insert into expireson values("Vegetable Oil", 2020-03-04);
-insert into expireson values("Pasta", 2004-04-4);
-insert into expireson values("Canned Beans", 2023-12-07);
+insert into expireson values("Bread", TO_DATE('2019-04-12', 'YYYY-MM-DD'));
+insert into expireson values("Linen", TO_DATE('1983-01-29', 'YYYY-MM-DD'));
+insert into expireson values("Vegetable Oil", TO_DATE('2020-03-04', 'YYYY-MM-DD'));
+insert into expireson values("Pasta", TO_DATE('2004-04-4', 'YYYY-MM-DD'));
+insert into expireson values("Canned Beans", TO_DATE('2023-12-07', 'YYYY-MM-DD'));
 
 -- INSERT expirationDate data
 insert into expirationDate values(TO_DATE('2019-04-12', 'YYYY-MM-DD'));
@@ -349,8 +349,12 @@ insert into shift values(14:30:00, 2.15, "A");
 
 
 -- INSERT item data
-insert into item values("Bread", "Food", 2019-04-12, "PantryC");
-insert into item values("Linen", "Other", 1983-01-29, "PantryB");
-insert into item values("Vegetable Oil", "Food", 2020-03-04, "PantryA");
-insert into item values("Pasta", "Food", 2004-04-4, "PantryA");
-insert into item values("Canned Beans", "Food", 2023-12-07, "PantryA");
+insert into item values("Bread", "Food", TO_DATE('2019-04-12', 'YYYY-MM-DD'), "PantryC");
+insert into item values("Linen", "Other", TO_DATE('1983-01-29', 'YYYY-MM-DD'), "PantryB");
+insert into item values("Vegetable Oil", "Food", TO_DATE('2020-03-04', 'YYYY-MM-DD'), "PantryA");
+insert into item values("Pasta", "Food", TO_DATE('2004-04-4', 'YYYY-MM-DD'), "PantryA");
+insert into item values("Canned Beans", "Food", TO_DATE('2023-12-07', 'YYYY-MM-DD'), "PantryA");
+
+
+
+	
