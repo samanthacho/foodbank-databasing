@@ -193,18 +193,21 @@ if ($db_conn) {
           executeBoundSQL("insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
           OCICommit($db_conn);
           $time = strtotime($_POST['insExp']);
-          $newformat = date('Y.m.d',$time);
-          $excheck = executePlainSQL("select exDate from expirationDate where exDate='$newformat'");
+          $newformat = date('Y/m/d',$time);
+          preg_match_all('~\d~', $newformat, $intarr);
+          $int = implode('',$intarr[0]);
+          // echo "intarr" . $int;
+          $excheck = executePlainSQL("select exDate from expirationDate where exDate='$int'");
           $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
 
           if ($excheck1[0] == NULL) {
-            executePlainSQL("insert into expirationDate values ('$newformat')");
+            executePlainSQL("insert into expirationDate values ('$int')");
             OCICommit($db_conn);
           }
           $tuple = array (
             ":bind1" => uniqid(),
             ":bind2" => $_POST['insIDItem'],
-            ":bind3" => $newformat
+            ":bind3" => $int
           );
           $alltuples = array (
             $tuple
