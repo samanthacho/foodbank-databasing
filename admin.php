@@ -68,6 +68,16 @@ get the values-->
   <p><input type="text" name="insSpec" size="10">
   <input type="submit" value="Find specified average donation" name="findd">
 </p></form>
+
+<p>Delete admin:</p>
+<p><font size="2">
+  Enter Admin Username:
+</font></p>
+<form method="POST" action="admin.php">
+  <p><input type="text" name="insadmin" size="10">
+  <input type="submit" value="Delete" name="deletea">
+</p></form>
+
 <form method="POST" action="admin.php">
   <input type="submit" value="Record a purchase" name="purchase">
 </form>
@@ -91,6 +101,9 @@ get the values-->
 </form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Distribute inventory" name="dist">
+</form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Show Admin Report" name="showr">
 </form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Logout" name="logout">
@@ -233,18 +246,13 @@ if ($db_conn) {
           }
           echo "</table>";
         } else
-        if (array_key_exists('removeEmp', $_POST)) {
-          $emusername = $_POST['emUser'];
-          if ($emusername== NULL){
-            echo "<br>Please enter a valid username.<br>";
-          }
-          if ($emusername != NULL){
-            $result = executePlainSQL("delete from employee where userName='$emusername'");
-            echo "<br>$emusername has been deleted<br>";
-          }
-        } else
         if (array_key_exists('purchase', $_POST)) {
           header("location: purchase.php");
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Purchase made.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
         } else
         if (array_key_exists('donations', $_POST)) {
           $result = executePlainSQL("select dname,moneydate,amount from money_collect");
@@ -356,6 +364,11 @@ if ($db_conn) {
               echo "Unknown shift type. Please enter distribution or collection.";
             }
           }
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Shift assigned.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
         } else
         if (array_key_exists('dist', $_POST)) {
           header("location: distribution.php");
@@ -382,7 +395,25 @@ if ($db_conn) {
             executePlainSQL("update employee set phone = '$newnumb' where username = '$user'");
             OCICommit($db_conn);
             echo "Number changed.";
-          } else echo "Number in invalid format. Try again.";
+          } else {echo "Number in invalid format. Try again.";}
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Changed number.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
+        } else
+        if (array_key_exists('showr', $_POST)) {
+          echo "Admin report: <br><br>";
+          $result = executePlainSQL("select action from adreport where username = '$login'");
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+            echo $row[0] . "<br>";
+          }
+        } else
+        if (array_key_exists('deletea', $_POST)) {
+          $ins = $_POST['insadmin'];
+          executePlainSQL("delete from admin where username = '$ins'");
+          OCICommit($db_conn);
+          echo "Admin deleted.";
         }
 
 	OCILogoff($db_conn);
