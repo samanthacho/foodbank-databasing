@@ -78,7 +78,7 @@ get the values-->
   <input type="submit" value="Delete" name="deletea">
 </p></form>
 
-<form method="POST" action="admin.php">
+<form method="POST" action="purchase.php">
   <input type="submit" value="Record a purchase" name="purchase">
 </form>
 <form method="POST" action="admin.php">
@@ -93,19 +93,22 @@ get the values-->
 <form method="POST" action="admin.php">
   <input type="submit" value="Purchase Report" name="purchasereport">
 </form>
-<form method="POST" action="volunteer.php">
+<form method="POST" action="inventory.php">
   <input type="submit" value="Generate Inventory Report" name="inventory"></p>
 </form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Funds Available" name="findfunds">
 </form>
-<form method="POST" action="admin.php">
+<form method="POST" action="distribution.php">
   <input type="submit" value="Distribute inventory" name="dist">
 </form>
 <form method="POST" action="admin.php">
   <input type="submit" value="Show Admin Report" name="showr">
 </form>
 <form method="POST" action="admin.php">
+  <input type="submit" value="Show Collection Report" name="collshow">
+</form>
+<form method="POST" action="login.php">
   <input type="submit" value="Logout" name="logout">
 </form>
 
@@ -183,6 +186,9 @@ function executeBoundSQL($cmdstr, $list) {
 // Connect Oracle...
 if ($db_conn) {
 
+  if (array_key_exists('purchase', $_POST)) {
+    header("location: purchase.php");
+  } else
 	if (array_key_exists('insertsubmit', $_POST)) {
 			//Getting the values from user and insert data into the table
 			$tuple = array (
@@ -414,6 +420,16 @@ if ($db_conn) {
           executePlainSQL("delete from admin where username = '$ins'");
           OCICommit($db_conn);
           echo "Admin deleted.";
+        } else
+        if (array_key_exists('collshow', $_POST)) {
+          $result = executePlainSQL("select sdate, length from collection_work e where not exists((select username from employee where username='$login') minus (select username from collection_work where length = e.length and sdate = e.sdate and letter = e.letter))");
+          echo "<br>Employee Collection Report: <br>";
+          echo "<table>";
+          echo "<tr><th>Date</th><th>Length</th></tr>";
+          while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+          echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
+          }
+          echo "</table>";
         }
 
 	OCILogoff($db_conn);
