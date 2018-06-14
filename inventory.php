@@ -103,7 +103,8 @@ if ($db_conn) {
   echo "<tr><th>Item</th><th>Quantity</th><th>Expiration Date</th></tr>";
 
   while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-  echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
+    $expParsed = date('Y/m/d', $row[2]);
+  echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $expParsed . "</td></tr>"; //or just use "echo $row[0]"
   }
   echo "</table>";
 

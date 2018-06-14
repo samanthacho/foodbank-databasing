@@ -34,12 +34,14 @@ if ($login) {
 <p>Enter purchase details:</p>
 <p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Cost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- Quantity
+ Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ Expiration Date
 </font></p>
 <form method = "POST" action="purchase.php">
  <p><input type="text" name="insItemName" size="15">
    <input type="text" name="insPAmount" size="10">
    <input type="text" name="insQuan" size="10">
+   <input type="text" name="insExpirDate" size="15">
    <input type = "submit" value="Make Purchase" name="purchase"></p>
  </form>
  <form method="POST" action="collection.php">
@@ -203,10 +205,34 @@ if ($db_conn) {
         $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
         OCICommit($db_conn);
       }
+
+      $time = strtotime($_POST['insExpirDate']);
+      $newformat = date('Y/m/d',$time);
+      preg_match_all('~\d~', $newformat, $intarr);
+      $int = implode('',$intarr[0]);
+      $excheck = executePlainSQL("select exDate from expirationDate where exDate='$int'");
+      $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
+
+      if ($excheck1[0] == NULL) {
+        executePlainSQL("insert into expirationDate values ('$int')");
+        OCICommit($db_conn);
+      }
+      $tuple = array (
+        ":bind1" => uniqid(),
+        ":bind2" => $_POST['insItemName'],
+        ":bind3" => $int
+      );
+      $alltuples = array (
+        $tuple
+      );
+      executeBoundSQL("insert into expiresOn values (:bind1, :bind2, :bind3)", $alltuples);
+      OCICommit($db_conn);
+
     } else {
       echo "<br>Insufficient Funds<br>";
     }
     }
+
   } else
   if (array_key_exists('return', $_POST)) {
     $un = $_COOKIE['username'];

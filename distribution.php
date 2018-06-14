@@ -115,12 +115,13 @@ if ($db_conn) {
     $check2 = executePlainSQL("select name from item where name='$check1'");
     $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
     if ($check3[0] != NULL) {
-      echo "<br>$check1's in stock. Details below.<br>";
+      echo "<br>$check1 is in stock. Details below.<br>";
       $result= executePlainSQL("select name, count(*), exdate from expiresOn where name='$check1' group by name, exdate");
       echo "<table>";
       echo "<tr><th>Item</th><th>Quantity</th><th>Expiration Date</th></tr>";
       while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>"; //or just use "echo $row[0]"
+        $expParsed = date('Y/m/d', $row[2]);
+        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $expParsed . "</td></tr>"; //or just use "echo $row[0]"
       }
       echo "</table>";
 

@@ -196,7 +196,6 @@ if ($db_conn) {
           $newformat = date('Y/m/d',$time);
           preg_match_all('~\d~', $newformat, $intarr);
           $int = implode('',$intarr[0]);
-          // echo "intarr" . $int;
           $excheck = executePlainSQL("select exDate from expirationDate where exDate='$int'");
           $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
 
