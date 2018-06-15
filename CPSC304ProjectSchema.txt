@@ -40,7 +40,7 @@ Item(Name: VARCHAR(255), category: VARCHAR(30), location: VARCHAR(30))
 * This is in BCNF b/c the only function dependencies relate to the primary key
 
 
-expiresOn(id : VARCHAR(255), name VARCHAR(255), exDate number)
+expiresOn(id : VARCHAR(255), name VARCHAR(255), exDate date)
 * Represents: the relationship between the instance of an item and its expiration date
 * Primary key: (String, date)
 * Constraints:
