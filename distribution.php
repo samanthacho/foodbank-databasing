@@ -112,7 +112,7 @@ if ($db_conn) {
   } else
   if (array_key_exists('lookitem', $_POST)) {
     $check1 = $_POST['insItem'];
-    $check2 = executePlainSQL("select name from item where name='$check1'");
+    $check2 = executePlainSQL("select name from expiresOn where name='$check1'");
     $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
     if ($check3[0] != NULL) {
       echo "<br>$check1 is in stock. Details below.<br>";
@@ -132,12 +132,30 @@ if ($db_conn) {
   } else
   if (array_key_exists('donations', $_POST)) {
     $check1 = $_POST['insDistItem'];
-    $check2 = executePlainSQL("select name from item where name='$check1'");
+    $check2 = executePlainSQL("select name from expiresOn where name='$check1'");
     $check3 = OCI_Fetch_Array($check2, OCI_BOTH);
     if ($check3[0] == NULL) {
       echo "Item is not in database.";
     } else {
       $quantity = $_POST['insQuan'];
+      // $result= executePlainSQL("select name, count(*), exdate from expiresOn where name='$check1' group by name, exdate");
+      // $admiss = 0;
+      // while ($row = OCI_Fetch_Array($check2, OCI_BOTH)) {
+      //   echo $row[0];
+      //   $admiss +=1;
+      // }
+      // echo $admiss;
+      // echo $quantity;
+      $time = strtotime($_POST['insDistDate']);
+      $findt = date('Y/m/d',$time);
+      preg_match_all('~\d~', $findt, $intarr);
+      $int = implode('',$intarr[0]);
+      $itemnm = $_POST['insDistItem'];
+      $found = False;
+      $idfetch = executePlainSQL("select count(*) from expireson where name='$itemnm' and exdate='$int' group by exdate, name");
+      $checkrow = OCI_Fetch_Array($idfetch, OCI_BOTH);
+      $admiss = $checkrow[0];
+      if ($admiss >= $quantity){
       for ($x = 0; $x < $quantity; $x++) {
         $time = strtotime($_POST['insDistDate']);
         $findt = date('Y/m/d',$time);
@@ -151,8 +169,9 @@ if ($db_conn) {
         }
         executePlainSQL("delete from expireson where id = '$curr_id' and name = '$itemnm' and exdate = '$int'");
         OCICommit($db_conn);
-        echo "Deletion executed.";
+        echo "Deletion executed.<br>";
       }
+    } else echo "Inadmissible parameters. Please check input and try again.";
     }
   }
 

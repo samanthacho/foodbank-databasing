@@ -477,6 +477,10 @@ if ($db_conn) {
           echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
           }
           echo "</table>";
+          $checker = OCI_Fetch_Array($result, OCI_BOTH);
+          if ($checker[0] == NULL) {
+            echo "No collection data to show.";
+          }
         }
 
 	OCILogoff($db_conn);
