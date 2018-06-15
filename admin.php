@@ -57,7 +57,7 @@ get the values-->
 <p>Add shift and assign to employee:</p>
 <p><font size="2">
   &nbsp;Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Date (DD-MM-YYYY)&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Date (DD MMM YYYY)&nbsp;&nbsp;&nbsp;&nbsp;
   Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;
   Shift Length (in hours)&nbsp;&nbsp;&nbsp;
   Volunteer Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -87,7 +87,7 @@ get the values-->
 </div>
 <br>
 <div class="button-inline">
-<form method="POST" action="admin.php">
+<form method="POST" action="collection.php">
 <input type="submit" value="Add Donation" name="moneyadd">
 </form>
 <form method="POST" action="admin.php">
@@ -237,6 +237,7 @@ if ($db_conn) {
 			);
 			executeBoundSQL("insert into employee values (:bind1, :bind2, :bind3, :bind4)", $alltuples);
 			OCICommit($db_conn);
+      echo "Inserted employee " . $_POST['insUname'] .".";
     } else
 			if (array_key_exists('updatesubmit', $_POST)) {
 				// Update tuple using data from user
@@ -385,7 +386,7 @@ if ($db_conn) {
         if (array_key_exists('shiftassign', $_POST)){
           $s = $_POST['insDate'];
           $date = strtotime($s);
-          $sdate = date('Y-m-d', $date);
+          $sdate = date('y-m-d', $date);
           $t = $_POST['insTime'];
           preg_match_all('!\d+!', $t, $intarr);
           $int = implode('',$intarr[0]);
