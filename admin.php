@@ -56,24 +56,24 @@ get the values-->
 
 <p>Add shift and assign to employee:</p>
 <p><font size="2">
-  &nbsp;Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Date (DD-MM-YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Length (in hours)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Letter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Volunteer Username
+  &nbsp;Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Date (DD-MM-YYYY)&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;
+  Shift Length (in hours)&nbsp;&nbsp;&nbsp;
+  Volunteer Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    Shift Letter
 </font></p>
 <form method="POST" action="admin.php">
   <p><input type="text" name="insShiftType" size="20">
     <input type="text" name="insDate" size="30">
     <input type="text" name="insTime" size="20">
     <input type="text" name="insLength" size="25">
+    <input type="text" name="insUsername" size="30">
     <input type="text" name="insLetter" size="3">
-    <input type="text" name="insUsername" size="20">
     <input type="submit" value="Assign Shift" name="shiftassign"></p>
   </form>
 
- 
+
 
 <h2> Food Bank Management </h2>
 
@@ -289,6 +289,11 @@ if ($db_conn) {
           // echo "</table>";
         } else
         if (array_key_exists('emplist', $_POST)) {
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Queried employee list.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
           $result = executePlainSQL("select name,phone from employee");
           echo "<br>Staff List:<br>";
           echo "<table>";
@@ -300,14 +305,19 @@ if ($db_conn) {
           echo "</table>";
         } else
         if (array_key_exists('purchase', $_POST)) {
-          header("location: purchase.php");
           $in1 = uniqid();
           $in2 = $login;
-          $in3 = "Purchase made.";
+          $in3 = "Visited purchase page.";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
           OCICommit($db_conn);
+          header("location: purchase.php");
         } else
         if (array_key_exists('donations', $_POST)) {
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Queried recorded donations.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
           $result = executePlainSQL("select dname,moneydate,amount from money_collect");
           echo "<br>Recorded Monetary Donations:<br>";
           echo "<table>";
@@ -329,7 +339,11 @@ if ($db_conn) {
           echo "</table>";
         } else
         if (array_key_exists('purchasereport', $_POST)) {
-
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Viewed purchase report.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
         $result = executePlainSQL("select purchase_make.item, purchase_make.pamount, employee.username from purchase_make inner join employee on employee.userName = purchase_make.userName");
           echo "<br>Purchases Made:<br>";
           echo "<table>";
@@ -341,9 +355,19 @@ if ($db_conn) {
           echo "</table>";
         } else
         if (array_key_exists('logout', $_POST)) {
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Logged out.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
           header("location: login.php");
         } else
         if (array_key_exists('inventory', $_POST)) {
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Visited inventory page.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
           header("location: inventory.php");
         } else
         if (array_key_exists('findfunds', $_POST)) {
@@ -419,7 +443,7 @@ if ($db_conn) {
           }
           $in1 = uniqid();
           $in2 = $login;
-          $in3 = "Shift assigned.";
+          $in3 = "Assigned shift to " . $uinput . ".";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
           OCICommit($db_conn);
         } else
@@ -431,13 +455,24 @@ if ($db_conn) {
           $result = executePlainSQL("select max(avg(amount)) from money_collect group by dname, dphone");
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
             echo "Maximum average donation by a single person is : $" . $row[0];
-          }}
+          }
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Queried maximum average donation.";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
+        }
           else
           if ($_POST['insSpec'] == 'Min') {
             $result = executePlainSQL("select min(avg(amount)) from money_collect group by dname, dphone");
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
               echo "Minimum average donation by a single person is : $" . $row[0];
             }
+            $in1 = uniqid();
+            $in2 = $login;
+            $in3 = "Queried minimum average donation.";
+            executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+            OCICommit($db_conn);
           } else echo "Invalid input. Please enter Min or Max.";
         } else
         if (array_key_exists('number', $_POST)) {
@@ -451,7 +486,7 @@ if ($db_conn) {
           } else {echo "Number in invalid format. Try again.";}
           $in1 = uniqid();
           $in2 = $login;
-          $in3 = "Changed number.";
+          $in3 = "Changed number for employee " . $user . ".";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
           OCICommit($db_conn);
         } else
@@ -461,12 +496,22 @@ if ($db_conn) {
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
             echo $row[0] . "<br>";
           }
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Queried admin report for user " . $login . ".";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
         } else
         if (array_key_exists('deletea', $_POST)) {
           $ins = $_POST['insadmin'];
           executePlainSQL("delete from admin where username = '$ins'");
           OCICommit($db_conn);
           echo "Admin deleted.";
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Delete admin user " . $ins . ".";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
         } else
         if (array_key_exists('collshow', $_POST)) {
           $result = executePlainSQL("select sdate, length from collection_work e where not exists((select username from employee where username='$login') minus (select username from collection_work where length = e.length and sdate = e.sdate and letter = e.letter))");
@@ -477,10 +522,16 @@ if ($db_conn) {
           echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
           }
           echo "</table>";
+          $result = executePlainSQL("select sdate, length from collection_work e where not exists((select username from employee where username='$login') minus (select username from collection_work where length = e.length and sdate = e.sdate and letter = e.letter))");
           $checker = OCI_Fetch_Array($result, OCI_BOTH);
           if ($checker[0] == NULL) {
             echo "No collection data to show.";
           }
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Queried collection report for " . $login . ".";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
         }
 
 	OCILogoff($db_conn);
