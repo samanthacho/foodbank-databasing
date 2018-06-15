@@ -17,6 +17,13 @@ FROM expiresOn
 WHERE name = itemlookup
 GROUP BY name, exDate
 
+//DISTRIBUTION PAGE : shows a list of items with quantitiy and expriation date, that are going to expire within the next week in ascending order (by date)
+SELECT name, count(*), exDate
+FROM expiresOn
+WHERE exDate <= DATE_ADD(DATE(NOW()), INTERVAL 1 WEEK)
+GROUP BY name, exDate
+ORDER BY exDate ASC
+
 -- JOIN QUERY
 //ADMIN PAGE: purchase report button - displays purchase list w/ amount + buyer
 SELECT purchase_make.item, purchase_make.pamount, employee.username
