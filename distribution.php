@@ -13,10 +13,10 @@ if ($login) {
   </form>
 
 
-  <p>Distribute item</p>
+  <h2>Distribute item</h2>
   <form method="POST" action="distribution.php">
     <p>Item: <input type="text" name="insDistItem" size="20">
-      Expiration Date:<input type = "text" name="insDistDate" size="10">
+      Expiration Date(DD MMM YYY):<input type = "text" name="insDistDate" size="10">
       Quantity:<input type = "text" name="insQuan" size="5">
       <input type ="submit" value= "submit" name="donations"></p>
     </form>
@@ -25,6 +25,13 @@ if ($login) {
       <input type="submit" value="Return" name="return">
     </form>
 
+<style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 
 <?php
 
