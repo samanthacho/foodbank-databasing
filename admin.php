@@ -1,3 +1,5 @@
+<h1>Administrator's Page</h1>
+
 <?php
 session_start();
 $login = $_COOKIE['username'];
@@ -5,10 +7,19 @@ if ($login) {
   echo "Welcome " . $login . "<br>";
 }
  ?>
+
+
+<h2> Employee Management</h2>
+
+<form method="POST" action="admin.php">
+  <input type="submit" value="Get All Employees" name="emplist">
+</form>
+
+
 <p>Add volunteer below:</p>
-<p><font size="2"> Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p><font size="2">&nbsp;Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Password</font></p>
 <form method="POST" action="admin.php">
 <!--refresh page when submit-->
@@ -17,13 +28,24 @@ Password</font></p>
 size="18"><input type="text" name="insUname" size="20"><input type="text" name="insPass">
 <!--define two variables to pass the value-->
 
-<input type="submit" value="insert" name="insertsubmit"></p>
+<input type="submit" value="Insert" name="insertsubmit"></p>
 </form>
 <!-- create a form to pass the values. See below for how to
 get the values-->
 
+ <p>Update Volunteer Phone Number:</p>
+  <p><font size="2">
+    Username:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    New Phone Number:
+  </font></p>
+  <form method="POST" action="admin.php">
+    <p><input type="text" name="insSearchU" size="20">
+      <input type="text" name="insPhoneN" size="20">
+      <input type="submit" value="Change Number" name="number"></p>
+    </form>
+
 <p> Find specified field associated with employee:</p>
-<p><font size="2">Employee Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p><font size="2">&nbsp;Employee Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Field
 </font></p>
 <form method="POST" action="admin.php">
@@ -34,11 +56,11 @@ get the values-->
 
 <p>Add shift and assign to employee:</p>
 <p><font size="2">
-  Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Date (DD MMM YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;Shift Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Date (DD-MM-YYYY)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Time (HH:MM)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Shift Length (in hours)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Shift Letter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Shift Letter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Volunteer Username
 </font></p>
 <form method="POST" action="admin.php">
@@ -51,25 +73,49 @@ get the values-->
     <input type="submit" value="Assign Shift" name="shiftassign"></p>
   </form>
 
-  <p>Update Volunteer Phone Number:</p>
-  <p><font size="2">
-    Username:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    New Phone Number:
-  </font></p>
-  <form method="POST" action="admin.php">
-    <p><input type="text" name="insSearchU" size="20">
-      <input type="text" name="insPhoneN" size="20">
-      <input type="submit" value="Change Number" name="number"></p>
-    </form>
+ 
 
-<p>Find Min/Max Donation Average:</p>
-<p><font size="2">
-  Enter 'Min' or 'Max'
-</font></p>
+<h2> Food Bank Management </h2>
+
+<div class="button-inline">
+<form method="POST" action="purchase.php">
+  <input type="submit" value="Record a purchase" name="purchase">
+</form>
 <form method="POST" action="admin.php">
-  <p><input type="text" name="insSpec" size="10">
-  <input type="submit" value="Find specified average donation" name="findd">
-</p></form>
+  <input type="submit" value="Purchase Report" name="purchasereport">
+</form>
+</div>
+<br>
+<div class="button-inline">
+<form method="POST" action="admin.php">
+<input type="submit" value="Add Donation" name="moneyadd">
+</form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Get Donations" name="donations">
+</form>
+</div>
+<br>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Funds Available" name="findfunds">
+</form>
+<form method="POST" action="inventory.php">
+  <input type="submit" value="Generate Inventory Report" name="inventory"></p>
+</form>
+
+<h2> Reports + Others </h2>
+<div class="button-inline">
+<form method="POST" action="admin.php">
+  <input type="submit" value="Show Admin Report" name="showr">
+</form>
+<form method="POST" action="admin.php">
+  <input type="submit" value="Show Collection Shift Report" name="collshow">
+</form>
+
+
+<form method="POST" action="distribution.php">
+  <input type="submit" value="Distribute inventory" name="dist">
+</form>
+</div>
 
 <p>Delete admin:</p>
 <p><font size="2">
@@ -80,40 +126,27 @@ get the values-->
   <input type="submit" value="Delete" name="deletea">
 </p></form>
 
-<form method="POST" action="purchase.php">
-  <input type="submit" value="Record a purchase" name="purchase">
-</form>
-<form method="POST" action="collection.php">
-<input type="submit" value="Add Donation" name="moneyadd">
-</form>
+<p>Find Min/Max Donation Average:</p>
+<p><font size="2">
+  Enter 'Min' or 'Max'
+</font></p>
 <form method="POST" action="admin.php">
-  <input type="submit" value="Get Employees" name="emplist">
-</form>
-<form method="POST" action="admin.php">
-  <input type="submit" value="Get Donations" name="donations">
-</form>
-<form method="POST" action="admin.php">
-  <input type="submit" value="Purchase Report" name="purchasereport">
-</form>
-<form method="POST" action="inventory.php">
-  <input type="submit" value="Generate Inventory Report" name="inventory"></p>
-</form>
-<form method="POST" action="admin.php">
-  <input type="submit" value="Funds Available" name="findfunds">
-</form>
-<form method="POST" action="distribution.php">
-  <input type="submit" value="Distribute inventory" name="dist">
-</form>
-<form method="POST" action="admin.php">
-  <input type="submit" value="Show Admin Report" name="showr">
-</form>
-<form method="POST" action="admin.php">
-  <input type="submit" value="Show Collection Report" name="collshow">
-</form>
+  <p><input type="text" name="insSpec" size="10">
+  <input type="submit" value="Find specified average donation" name="findd">
+</p></form>
+
+<br>
 <form method="POST" action="login.php">
   <input type="submit" value="Logout" name="logout">
 </form>
 
+<style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 <?php
 
 //this tells the system that it's no longer just parsing
