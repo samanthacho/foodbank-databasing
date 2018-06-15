@@ -6,21 +6,14 @@ drop table collection_work;
 drop table distribution_work;
 drop table purchase_make;
 drop table volunteer_add;
+drop table adreport;
 drop table admin;
 drop table expiresOn;
 drop table food_g;
 drop table item;
-drop table adreport;
 drop table shift;
 drop table expirationDate;
 drop table employee;
-
-create table adreport(
-	prep varchar(255) not null primary key,
-	username varchar(30),
-	action varchar(255),
-	foreign key (username) references admin (username) ON DELETE CASCADE
-);
 
 create table item (
 	name varchar(30) not null primary key,
@@ -94,7 +87,8 @@ create table item_collects(
 	username varchar(30) not null,
 	item varchar(30) not null,
 	primary key (did),
-	foreign key (username) references employee (username)
+	foreign key (username) references employee (username),
+	foreign key (item) references item(name)
 );
 grant select on item_collects to public;
 
@@ -105,6 +99,12 @@ create table admin (
 );
 grant select on admin to public;
 
+	create table adreport(
+		prep varchar(255) not null primary key,
+		username varchar(30),
+		action varchar(255),
+		foreign key (username) references admin (username) ON DELETE CASCADE
+	);
 
 create table purchase_make (
 	pid varchar(255) not null primary key,
@@ -159,11 +159,6 @@ create table volunteer_add(
 grant select on volunteer_add to public;
 
 
--- INSERT adreport data
-insert into adreport values('prep', 'volunteer1', 'sorting');
-insert into adreport values('prep', 'volunteer2', 'cleaning');
-
-
 
 -- INSERT shift data
 -- ERROR letter COLUMN DNE
@@ -178,7 +173,6 @@ insert into shift values(2045, 2.50, 'C',TO_DATE('2018-02-10','YYYY-MM-DD'));
 insert into shift values(2000, 1.00, 'D',TO_DATE('2017-08-11','YYYY-MM-DD'));
 insert into shift values(2000, 2.00, 'E',TO_DATE('2018-05-12','YYYY-MM-DD'));
 insert into shift values(2030, 2.15, 'F',TO_DATE('2018-11-10','YYYY-MM-DD'));
-
 
 -- INSERT Employee data
 -- PASSWORD NO COLUMN
@@ -198,6 +192,7 @@ insert into item values('Linen', 'Other', 'PantryB');
 insert into item values('Vegetable Oil', 'Food', 'PantryA');
 insert into item values('Pasta', 'Food', 'PantryA');
 insert into item values('Canned Beans', 'Food', 'PantryA');
+	insert into item values('Canned Pineapple', 'Food', 'PantryA');
 
 -- INSERT food_g data
 -- ERROR column DNE
@@ -207,6 +202,12 @@ insert into food_g values('Vegetable Oil');
 insert into food_g values('Fats');
 insert into food_g values('Protein');
 
+	-- INSERT expirationDate data
+	insert into expirationDate values(20190412);
+	insert into expirationDate values(19830129);
+	insert into expirationDate values(20200304);
+	insert into expirationDate values(20040404);
+	insert into expirationDate values(20231207);
 
 -- INSERT expireson data
 -- ERORR BREAD COLUMN DNE
@@ -282,13 +283,6 @@ insert into item_collects values('8','Jack Ko', 2048573859,TO_DATE('2017-08-11',
 insert into item_collects values('9','Liz Apple', 4739174824,TO_DATE('2018-05-12', 'YYYY-MM-DD'), 'volunteer3','Pasta');
 insert into item_collects values('10','Nick Brown ', 6045829104,TO_DATE('2018-11-10', 'YYYY-MM-DD'),'volunteer3','Canned Beans');
 
--- INSERT expirationDate data
-insert into expirationDate values(20190412);
-insert into expirationDate values(19830129);
-insert into expirationDate values(20200304);
-insert into expirationDate values(2004044);
-insert into expirationDate values(20231207);
-
 
 
 -- INSERT money_collect data
@@ -298,6 +292,10 @@ insert into money_collect values('2','Jane Doe', 6048463847,TO_DATE('2018-05-31'
 insert into money_collect values('4','Chad Smith', 7788297482,TO_DATE('2018-12-03', 'YYYY-MM-DD'),'volunteer2', 110.25, 'credit');
 insert into money_collect values('6','Sarah Lee', 8391848294,TO_DATE('2015-01-13', 'YYYY-MM-DD'),'volunteer3', 200.00, 'cash');
 insert into money_collect values('7','Amber Chan', 7784920412,TO_DATE('2000-07-23', 'YYYY-MM-DD'),'volunteer4',135.00, 'cash');
+
+	-- INSERT adreport data
+insert into adreport values('prep', 'admin1', 'sorting');
+insert into adreport values('prep1', 'admin1', 'cleaning');
 
 
 COMMIT;
