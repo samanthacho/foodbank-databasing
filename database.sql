@@ -66,7 +66,9 @@ create table expiresOn(
 	name varchar(30),
 	exdate number,
 	primary key (id),
-	check (length(exdate)=8)
+	check (length(exdate)=8),
+	foreign key (exdate) references expirationdate(exdate),
+	foreign key (name) references item(name)
 );
 grant select on expiresOn to public;
 
