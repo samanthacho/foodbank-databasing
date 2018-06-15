@@ -1,0 +1,179 @@
+﻿Schema
+Money_Collect (did:varchar(255),dname:VARCHAR(30), dphone: number, moneydate: DATE, username: VARCHAR(30), amount: decimal(10,2), medium: VARCHAR(30))
+* Represents: entity set donation, subclass of Donation
+* Primary Key: did
+* Foreign Key(s): (username) reference employee(username)
+* Constraints:
+   * Username is NOT NULL
+   * Amount is not null
+   * Medium is not null
+   * Moneydate is not null
+* FDs:
+   * did → name, phone, moneydate, amount, medium, did
+      * From the donation ID, we can retrieve all the information about the donation, as it is unique
+      * There is no FD name → phone because multiple people could be using the same phone number (i.e. multiple people in the same household using a landline) or one person could be using more than one phone number or two different people could have the same name (and therefore different phone numbers, etc.
+* Already in BCNF: all attributes depend only on the primary key
+
+
+Item_Collects(did: varchar(255), name:VARCHAR(30), phone: number, itemdate: DATE, username: VARCHAR(30), item varchar(30))
+* Represents: entity set donation, subclass of Donation
+* Primary Key: did
+* Foreign Key(s): (username) reference employee (username)
+* Constraints:
+   * username NOT NULL
+   * Item not null
+* FDs:
+   * did → name, phone, itemdate, did, item
+      * From the donation ID, we can retrieve all the information about the donation, as it is unique
+      * There is no FD name → phone because multiple people could be using the same phone number (i.e. multiple people in the same household using a landline) or one person could be using more than one phone number or two different people could have the same name (and therefore different phone numbers, etc.
+* Already in BCNF: all attributes depend only on the primary key
+
+
+Item(Name: VARCHAR(255), category: VARCHAR(30), location: VARCHAR(30))
+* Represents: an item
+* Primary Key: (String)
+* Constraints:
+   * Location is not null
+* FDs:
+   * String → category, location, String
+   * String is the name of the item (i.e. bread, linen, etc.). This determines the category (food if food, other if not edible), and the location, as all items that are the same are stored together.
+* This is in BCNF b/c the only function dependencies relate to the primary key
+
+
+expiresOn(id : VARCHAR(255), name VARCHAR(255), exDate number)
+* Represents: the relationship between the instance of an item and its expiration date
+* Primary key: (String, date)
+* Constraints:
+   * check (length(exdate)=8)
+   * exDate is not null
+   * Name is not null
+* Foreign Key(s):
+   * (exDate) references ExpirationDate
+   * Name references Item
+* FDs:
+   * String, exDate,name → String, exDate,name
+   * This is the relationship between an instance of an item and its expiration date; the only attributes here are parts of the primary key 
+* Already in BCNF, as stated above; all attributes are parts of the primary key
+
+
+expirationDate(exDate: VARCHAR(255))
+* Represents: the expiration date of an item
+* Primary Key: exDate
+* FDs:
+   * exDate → exDate
+   * A date representing the date an item expires
+* Already in BCNF, as the only attribute is the primary key
+
+
+food_g(value: VARCHAR(30))
+* Represents: Food groups the item is comprised of
+* Primary Key: value
+* FDs:
+   * value → value
+* Already in BCNF; the only attribute in this table is the primary key
+
+
+F_has(value: VARCHAR(30), name: VARCHAR(30))
+* Relationship between Item and Group
+* Primary key: value, string
+* Foreign Key(s):
+   * value references Group
+   * (name) references Item
+* FDs:
+   * value, string → value, string
+   * The nutritional value of the item (i.e. Carbohydrates, Protein, etc.) and the name of the item (string). Both are foreign keys, as this table represents the relation between an item and its food groups.
+* Already in BCNF; the only attributes in this table are parts of the primary key
+
+
+Collection_shift(startTime: number, length: decimal(5,2), letter: VARCHAR(4), sdate DATE, username: VARCHAR(30))
+* Represents: Collection shift
+* Primary Key:
+   * startTime, length, letter,sdate reference Shift
+   * Username references employee
+* FDs:
+   * startTime, length, letter → startTime, length, letter
+      * The startTime, letter,sdate and the length of a shift are primary keys of the superclass Shift
+      * The letter is to differentiate between shifts worked at the same time w/ the same length
+* Already in BCNF; the only attributes in this table are parts of the primary key
+
+
+Distribution_work(startTime: number, length: decimal(5,2), letter: VARCHAR(4), sdate DATE, username: VARCHAR(30))
+* Represents: Distribution shift
+* Primary Key: startTime, length, letter,sdate
+* Foreign Key(s): 
+   * startTime, length, letter,sdate reference Shift
+   * Username references employee
+* FDs:
+   * startTime, length, letter, sdate → startTime, length, letter,sdate, username
+      * The startTime, letter,sdate and the length of a shift are primary keys of the superclass Shift
+      * The letter is to differentiate between shifts worked at the same time w/ the same length
+* Already in BCNF; the only attributes in this table are parts of the primary key
+
+
+Purchase_Make(pID: VARCHAR(255), amount: DECIMAL(10,2), userName: VARCHAR(30), item: VARCHAR(30))
+* Represents: purchase made by volunteer
+* Primary Key: pID
+* Foreign Key: userName references Admin
+* Constraints:
+   * Only admissible if the sum of all purchase <= the sum of all donations
+   * Pamount is not null
+   * Item is not null
+* FDs:
+   * purchaseID → amount, item
+      * From the purchase ID, we can determine the item(s) purchased and the amount spent, as the purchaseID is unique to the purchase
+* Already in BCNF; the only FD is the key, which determines all other elements in the table
+
+
+Shift (startTime: number, length: DECIMAL(5,2), letter: VARCHAR(4), sdate: DATE)
+* Represents: a shift logged by an admin user
+* Primary Key: startTime, length, letter, date
+* FDs:
+   * startTime, length, letter,date → startTime, length, letter,date
+      * The shift is identified by the startTime, letter and length, which are also the only attributes in the table that are not foreign keys
+* Already in BCNF; the only attributes in this table are already parts of the primary key
+
+
+Volunteer_Add(v_uname, username)
+* Represents: a volunteer is added to the system by an Admin user
+* Primary key: userName
+* Foreign Key(s):
+   * userName references Admin
+   * v_uname references Employee
+* Constraints:
+   * userName cannot be null
+* FDs:
+   * userName → userName
+      * v_uname represents the username of the volunteer that was added, and userName represents the userName of the admin that logged it into the system
+* Already in BCNF; the only attribute in this table that is not the foreign key is the primary key
+
+
+Admin(userName: VARCHAR(30))
+* Represents: an admin user
+* Primary key: userName
+* Foreign key: userName references Employee
+* FDs:
+   * userName → userName
+      * The only attribute in this table is the primary key; it is also a foreign key that references the Employee object that the Administrator is a part of. userName is the username of the admin/employee.
+* Already in BCNF; this table is solely comprised of the primary/foreign key
+
+
+Employee(userName: VARCHAR(30), phone: number, name: VARCHAR(30), password: VARCHAR(30))
+* Represents: an employee of the foodbank
+* Primary key: userName
+* FDs:
+   * userName → phone, name, password
+      * userName is unique to an employee in the system, and can thus determine the phone, name, and password of the employee that the userName belongs to
+* Already in BCNF; the only FD is the userName, which determines all other attributes in the table
+
+
+adreport(prep: VARCHAR(255), username: varchar(30), action varchar(255))
+* Logs the action of an admin via strings (a report of their actions within the system)
+* Primary key: prep
+* FDs:
+   * Prep → prep, username, action
+      * Prep is a unique key to identify all logged actions associated with the admin user
+   * Already in BCNF; the only FD is the prep, which determines all other attributes
+
+
+WHAT CHANGED
+We made some minor alterations, mostly including renaming variables and tables. Notably, we added a table called adreport, which logs the actions of an admin user while they are on the site. It is in a many-to-one relationship with admin, where a single admin can relate to multiple reports, but a report can only reference a single admin. These can be queried to get a report on the actions of the admin while they were on the site, and will be deleted upon deletion of the admin (cascading delete). We also changed the datatypes of auto-generated identification numbers to strings in order to use the PHP function uniqid() to generate the unique IDs, and many of the date attributes in multiple tables to dates instead of numbers. We also changed phone numbers to numbers instead of strings, and restricted names and usernames to 30 characters.
