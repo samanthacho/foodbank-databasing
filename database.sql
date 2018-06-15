@@ -1,4 +1,3 @@
-
 drop table money_collect;
 drop table item_collects;
 drop table f_has;
@@ -26,6 +25,7 @@ create table item (
 	category varchar(30),
 	location varchar(30) not null
 );
+
 grant select on item to public;
 
 
@@ -33,7 +33,6 @@ create table food_g (
 	value varchar(30) not null primary key
 );
 grant select on food_g to public;
-
 
 create table shift (
 	startTime number not null,
@@ -58,7 +57,6 @@ create table employee(
 	primary key (username)
 );
 grant select on employee to public;
-
 
 create table expiresOn(
 	id varchar(255) not null,
@@ -102,7 +100,6 @@ create table admin (
 );
 grant select on admin to public;
 
-
 create table purchase_make (
 	pid varchar(255) not null primary key,
 	pamount decimal(10,2) not null,
@@ -118,7 +115,7 @@ create table f_has (
 	name varchar(30) not null,
 	primary key(value,name),
 	foreign key(value) references food_g (value),
-	foreign key(name) references item (name)
+	foreign key(name) references item_Table (name)
 );
 grant select on f_has to public;
 
@@ -187,7 +184,6 @@ insert into employee values ('volunteer2', 6048271843, 'Test Volun2', 'PaSsword'
 insert into employee values ('volunteer3', 6049402281, 'Test Volun3', 'PasSword');
 insert into employee values ('volunteer4', 6041111111, 'Test Volun4', 'PassWord');
 
-
 -- INSERT item data
 -- ERROR: Location column not allowed there??
 insert into item values('Bread', 'Food',  'PantryC');
@@ -213,7 +209,6 @@ insert into expireson values('3','Vegetable Oil',20200304);
 insert into expireson values('4','Pasta', 20040404);
 insert into expireson values('5','Canned Beans',20231207);
 
-
 -- INSERT admin data
 -- ERROR COLUMN DNE
 insert into admin values ('admin0');
@@ -227,7 +222,6 @@ insert into volunteer_add values ('volunteer1', 'admin0');
 insert into volunteer_add values ('volunteer2', 'admin1');
 insert into volunteer_add values ('volunteer3', 'admin2');
 insert into volunteer_add values ('volunteer4', 'admin0');
-
 
 -- INSERT purchase_make data
 -- ERROR BREAD COLUMN DNE
