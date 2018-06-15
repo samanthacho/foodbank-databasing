@@ -57,7 +57,7 @@ grant select on employee to public;
 create table expiresOn(
 	id varchar(255) not null,
 	name varchar(30),
-	exdate number,
+	exdate date,
 	primary key (id),
 	check (length(exdate)=8),
 	foreign key (exdate) references expirationdate(exdate),
