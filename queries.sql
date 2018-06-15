@@ -1,5 +1,5 @@
 
-/*REQUIREMENTS  
+/*REQUIREMENTS
 DONE: Selection + projection query
 DONE: update operation
 
@@ -26,7 +26,7 @@ WHERE name = :bind2
 // Employee report
 SELECT finder
 FROM employee
-WHERE username = 
+WHERE username =
 --"select $finder from employee where username = '$unametouse'");
 
 // Adreport
@@ -37,17 +37,17 @@ INSERT into adreport VALUES ()
 SELECT name, phone
 FROM employee
 
-// Donation list: args; NONE  
+// Donation list: args; NONE
 SELECT dname, moneydate, amount
-FROM money_collect 
+FROM money_collect
 
 //Physical Donations
 SELECT name, itemdate, item
 FROM item_collects
 
 // Purchase list + Buyer
-SELECT purchase_make.tiem, purchase_make.pamount, employee.username 
-FROM purchase_make 
+SELECT purchase_make.item, purchase_make.pamount, employee.username
+FROM purchase_make
 INNER JOIN employee ON employee.username = purchase_make.username
 
 SELECT sum(pamount)
@@ -56,9 +56,9 @@ FROM purchase_make
 SELECT sum(amount)
 FROM money_collect
 
-SELECT letter 
+SELECT letter
 FROM shift
-WHERE startTime=  and length= and sdate= 
+WHERE startTime=  and length= and sdate=
 -- select letter from shift where startTime='$int' and length='$slength' and letter='$schar' and sdate='$sdate'
 
 INSERT into shift VALUES ()
@@ -66,7 +66,7 @@ INSERT into shift VALUES ()
 
 SELECT username
 FROM employee
-WHERE username = 
+WHERE username =
 --"select username from employee where username='$uinput'");
 
 INSERT into collection_work values ()
@@ -82,25 +82,25 @@ SELECT max(avg(amount))
 FROM money_collect
 GROUP BY dname, dphone
 
-SELECT min(avg (amount)) 
-FROM money_collect 
+SELECT min(avg (amount))
+FROM money_collect
 GROUP BY dname, dphone
 
-UPDATE employee 
+UPDATE employee
 SET phone = '$newnumb'
-WHERE username = 
+WHERE username =
 -- "update employee set phone = '$newnumb' where username = '$user'");
 
 SELECT action
 FROM adreport
-WHERE username = 
+WHERE username =
 --"select action from adreport where username = '$login'"
 
 DELETE from admin
-WHERE username = 
+WHERE username =
 --("delete from admin where username = '$ins'");
 
-SELECT sdate, length 
+SELECT sdate, length
 FROM collection_work e
 WHERE NOT EXIST (( SELECT username FROM employee WHERE username = '$login')
 MINUS (SELECT username FROM collection_work WHERE length = e.length and sdate = e.sdate
@@ -117,7 +117,7 @@ WHERE name = instItem/*not sure what to put here*/
 --select name from item where name='$check1'");
 
 
-INSERT into money_collect 
+INSERT into money_collect
 VALUES (a,b,c,d,e,f,g);
 --insert into money_collect values (:bind1, :bind2, :bind3, :bind4, :bind5, :bind6, :bind7)", $alltuples);
 
@@ -134,10 +134,10 @@ WHERE name =itemID;
 --"select location from item where name='$itemID'");
 
 
-INSERT into item_collects 
+INSERT into item_collects
 VALUES (a,b,c,d,e,f)
 --"insert into item_collects values(:bind1,:bind2,:bind3,:bind4,:bind5,:bind6)", $alltuples);
-    
+
 SELECT exDate
 FROM expirationDate
 WHERE exDate =
@@ -167,43 +167,48 @@ INSERT into f_has VALUES () --"insert into f_has values('$nutvar', '$iname')");
 
 SELECT username
 FROM admin
-WHERE username= 
+WHERE username=
 --"select username from admin where username='$un'")
 
-SELECT name 
+SELECT name
 FROM item
-WHERE name = 
+WHERE name = /*user input*/
 --select name from item where name='$check1'");
 
 SELECT name, count(*), exDate
-FROM expiresOn 
-WHERE name = 
+FROM expiresOn
+WHERE name = /*user input*/
 GROUP BY name, exDate
 --"select name, count(*), exdate from expiresOn where name='$check1' group by name, exdate")
 
 SELECT name
 FROM item
-WHERE name = 
+WHERE name = /*user input*/
 --"select name from item where name='$check1'");
 
 SELECT id
 FROM expiresOn
-WHERE name  =  and exDate = 
+WHERE name  = /*user input*/ and exDate = /*user input*/
 --"select id from expireson where name='$itemnm' and exdate='$int'");
 
 
 DELETE from expireson
-WHERE id =  and name = and exDate =
+WHERE id = /*user input*/ and name = /*user input*/ and exDate = /*user input*/
 -- delete from expireson where id = '$curr_id' and name = '$itemnm' and exdate = '$int'");
+
+SELECT count(*)
+FROM expiresOn
+WHERE name = /*user input*/ and exdate = /*user input*/ group by exdate, name
+-- select count(*) from expireson where name='$itemnm' and exdate='$int' group by exdate, name
 
 
 //////////////////////////// INVENTORY FILE//////////////////////////////
 SELECT username
 FROM admin
-WHERE username = 
+WHERE username =
 --select username from admin where username='$login'");
 
-SELECT name, count(*), exDate 
+SELECT name, count(*), exDate
 FROM expiresOn
 GROUP BY name, exDate
 
@@ -212,7 +217,7 @@ GROUP BY name, exDate
 
 // Login
 SELECT password, user
-FROM employee 
+FROM employee
 WHERE username= uname
 --("select password,username from employee where username='$un'");
 
@@ -225,15 +230,15 @@ WHERE username=uname
 //////////////////////////// PURCHASE FILE//////////////////////////////
 SELECT name
 FROM item
-WHERE name = 
+WHERE name =
 --"select name from item where name='$check1'");
 
 INSERT into item VALUES ()
 --"insert into item values(:bind1, :bind2,:bind3)", $alltuples);
 
-SELECT value 
+SELECT value
 FROM food_g
-WHERE value= 
+WHERE value=
 --"select value from food_g where value='$nutvar'"
 
 INSERT into food_g values()
@@ -242,13 +247,13 @@ INSERT into food_g values()
 INSERT into f_has values()
 --insert into f_has values('$nutvar', '$iname')");
 
-SELECT name 
+SELECT name
 FROM item
-WHERE name = 
+WHERE name =
 --select name from item where name='$ivar'");
 
 SELECT sum(amount)
-FROM money_collect 
+FROM money_collect
 GROUP BY amount
 
 SELECT sum(pamount)
@@ -258,9 +263,9 @@ GROUP BY pamount
 INSERT into purchase_make values ()
 --insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
 
-SELECT exDate 
+SELECT exDate
 FROM expirationDate
-WHERE exDate = 
+WHERE exDate =
 --"select exDate from expirationDate where exDate='$int'");
 
 INSERT into expirationDate VALUES ()
@@ -269,23 +274,23 @@ INSERT into expirationDate VALUES ()
 INSERT into expireson VALUES ()
 --"insert into expiresOn values (:bind1, :bind2, :bind3)", $alltuples);
 
-SELECT username 
-FROM admin 
-WHERE username = 
+SELECT username
+FROM admin
+WHERE username =
 --"select username from admin where username='$un'");
 
 
 
 //////////////////////////// VOLUNTEER FILE//////////////////////////////
-SELECT sdate 
+SELECT sdate
 FROM collection_work
 WHERE startTime <=  and ( - startTime)/ 100 <=any (
-SELECT length from collection_work 
-WHERE startTime <= and = username and =sdate) 
+SELECT length from collection_work
+WHERE startTime <= and = username and =sdate)
 --"select sdate from collection_work where startTime <= '$int' and
 -- ('$int' - startTime)/100 <= any (select length from collection_work where startTime <= '$int' and '$login' = username and '$currdate' = sdate)");
 
-SELECT sdate 
+SELECT sdate
 FROM distribution_work
 WHERE startTime
 --"select sdate from distribution_work where startTime <= '$int' and
