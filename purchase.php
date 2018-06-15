@@ -204,29 +204,29 @@ if ($db_conn) {
         );
         $result = executeBoundSQL("insert into purchase_make values(:bind1, :bind2, :bind3, :bind4)", $alltuples);
         OCICommit($db_conn);
-      }
 
-      $time = strtotime($_POST['insExpirDate']);
-      $newformat = date('Y/m/d',$time);
-      preg_match_all('~\d~', $newformat, $intarr);
-      $int = implode('',$intarr[0]);
-      $excheck = executePlainSQL("select exDate from expirationDate where exDate='$int'");
-      $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
+        $time = strtotime($_POST['insExpirDate']);
+        $newformat = date('Y/m/d',$time);
+        preg_match_all('~\d~', $newformat, $intarr);
+        $int = implode('',$intarr[0]);
+        $excheck = executePlainSQL("select exDate from expirationDate where exDate='$int'");
+        $excheck1 = OCI_Fetch_Array($excheck,OCI_BOTH);
 
-      if ($excheck1[0] == NULL) {
-        executePlainSQL("insert into expirationDate values ('$int')");
+        if ($excheck1[0] == NULL) {
+          executePlainSQL("insert into expirationDate values ('$int')");
+          OCICommit($db_conn);
+        }
+        $tuple = array (
+          ":bind1" => uniqid(),
+          ":bind2" => $_POST['insItemName'],
+          ":bind3" => $int
+        );
+        $alltuples = array (
+          $tuple
+        );
+        executeBoundSQL("insert into expiresOn values (:bind1, :bind2, :bind3)", $alltuples);
         OCICommit($db_conn);
       }
-      $tuple = array (
-        ":bind1" => uniqid(),
-        ":bind2" => $_POST['insItemName'],
-        ":bind3" => $int
-      );
-      $alltuples = array (
-        $tuple
-      );
-      executeBoundSQL("insert into expiresOn values (:bind1, :bind2, :bind3)", $alltuples);
-      OCICommit($db_conn);
 
     } else {
       echo "<br>Insufficient Funds<br>";
