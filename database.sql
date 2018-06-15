@@ -44,9 +44,9 @@ create table expirationDate(
 grant select on expirationDate to public;
 
 create table employee(
-	username varchar(30) not null,
 	phone number,
 	name varchar(30),
+	username varchar(30) not null,
 	password varchar(30),
 	check (length(phone)=10),
 	primary key (username)
@@ -176,13 +176,13 @@ insert into shift values(2030, 2.15, 'F',TO_DATE('2018-11-10','YYYY-MM-DD'));
 
 -- INSERT Employee data
 -- PASSWORD NO COLUMN
-insert into employee values ('admin0', 6045939281, 'Test User', 'Password');
-insert into employee values ('admin1', 6045939281, 'Test User', 'Password');
-insert into employee values ('admin2', 6045939281, 'Test User', 'Password');
-insert into employee values ('volunteer1', 6048392860, 'Test Volun1', 'PAssword');
-insert into employee values ('volunteer2', 6048271843, 'Test Volun2', 'PaSsword');
-insert into employee values ('volunteer3', 6049402281, 'Test Volun3', 'PasSword');
-insert into employee values ('volunteer4', 6041111111, 'Test Volun4', 'PassWord');
+insert into employee values (6045939281,'Test User','admin0','Password');
+insert into employee values (6045939281, 'Test User', 'admin1','Password');
+insert into employee values (6045939281, 'Test User', 'admin2', 'Password');
+insert into employee values (6048392860, 'Test Volun1', 'volunteer1', 'PAssword');
+insert into employee values (6048271843, 'Test Volun2', 'volunteer2', 'PaSsword');
+insert into employee values (6049402281, 'Test Volun3', 'volunteer3','PasSword');
+insert into employee values (6041111111, 'Test Volun4', 'volunteer4', 'PassWord');
 
 
 -- INSERT item data

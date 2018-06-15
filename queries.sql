@@ -1,4 +1,3 @@
-
 -- SELECTION + PROJECTION QUERY
 // ADMIN PAGE: Enter username and field user wants to look up
 SELECT finder
@@ -43,7 +42,6 @@ SELECT max(avg(amount))
 FROM money_collect
 GROUP BY dname, dphone
 
-SELECT min(avg (amount)) 
-FROM money_collect 
+SELECT min(avg (amount))
+FROM money_collect
 GROUP BY dname, dphone
-
