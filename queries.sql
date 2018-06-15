@@ -19,7 +19,7 @@ GROUP BY name, exDate
 
 -- JOIN QUERY
 //ADMIN PAGE: purchase report button - displays purchase list w/ amount + buyer
-SELECT purchase_make.tiem, purchase_make.pamount, employee.username 
+SELECT purchase_make.item, purchase_make.pamount, employee.username 
 FROM purchase_make 
 INNER JOIN employee ON employee.username = purchase_make.username
 
