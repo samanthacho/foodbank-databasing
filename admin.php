@@ -103,8 +103,13 @@ get the values-->
 </form>
 
 <h2> Reports + Others </h2>
+<p><font size="2"
 <div class="button-inline">
+  <p><font size="2">
+    &nbsp;Enter Admin Username:
+  </font></p>
 <form method="POST" action="admin.php">
+  <input type="text" name="insadrep" size="25">
   <input type="submit" value="Show Admin Report" name="showr">
 </form>
 <form method="POST" action="admin.php">
@@ -118,8 +123,6 @@ get the values-->
 </div>
 
 <p>Delete admin:</p>
-<p><font size="2">
-  Enter Admin Username:
 </font></p>
 <form method="POST" action="admin.php">
   <p><input type="text" name="insadmin" size="10">
@@ -492,16 +495,22 @@ if ($db_conn) {
           OCICommit($db_conn);
         } else
         if (array_key_exists('showr', $_POST)) {
-          echo "Admin report: <br><br>";
-          $result = executePlainSQL("select action from adreport where username = '$login'");
+          $adlog = $_POST['insadrep'];
+          echo "Admin report: " . $adlog . "<br><br>";
+          $result = executePlainSQL("select action from adreport where username = '$adlog'");
+          $bool = False;
           while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
             echo $row[0] . "<br>";
+            $bool = True;
           }
           $in1 = uniqid();
           $in2 = $login;
-          $in3 = "Queried admin report for user " . $login . ".";
+          $in3 = "Queried admin report for user " . $adlog . ".";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
           OCICommit($db_conn);
+          if ($bool == False) {
+            echo "No data found.";
+          }
         } else
         if (array_key_exists('deletea', $_POST)) {
           $ins = $_POST['insadmin'];
