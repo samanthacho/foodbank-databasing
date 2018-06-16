@@ -1,3 +1,4 @@
+
 <h1>Welcome: Collection Shift</h1>
 <?php
 session_start();
@@ -14,7 +15,7 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
 
      <p><input type="text" name="insDname" size="20"><input type="text" name="insDPh" size="12">
        <input type="text" name="insAmount" size="10"><input type="text" name="insMed" size="10">
-<input type="submit" value="insert" name="moneyadd"></p>
+<input type="submit" value="insert" name="moneyaddition"></p>
 </form>
 
 <h2>Add physical donation below</h2>
@@ -148,7 +149,7 @@ if ($db_conn) {
       echo "<br>Item is not in database. Please record item before continuing with donation.<br>";
     }
   } else
-	if (array_key_exists('moneyadd', $_POST)) {
+	if (array_key_exists('moneyaddition', $_POST)) {
 			//Getting the values from user and insert data into the table
       $tuple = array (
         ":bind1" => uniqid(),

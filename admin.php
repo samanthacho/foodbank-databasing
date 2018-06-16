@@ -275,22 +275,8 @@ if ($db_conn) {
             $printer = $rowuse[0];
             echo $printer;
           }
-
-          // while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-          //   echo "HERE";
-          //   echo $row[0] . "<br>"; //or just use "echo $row[0]"
-          // }
         }
           else echo "Not a valid field.";
-          // $result = executePlainSQL("select name, item from item_collects where username = '".$_POST['insUnameSearch']."'");
-          // echo "<br>Item donation data for employee:<br>";
-          // echo "<table>";
-          // echo "<tr><th>Name</th><th>Item</th></tr>";
-          //
-          // while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-          //   echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>"; //or just use "echo $row[0]"
-          // }
-          // echo "</table>";
         } else
         if (array_key_exists('emplist', $_POST)) {
           $in1 = uniqid();
