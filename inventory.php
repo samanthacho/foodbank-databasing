@@ -1,3 +1,4 @@
+<h1> Inventory</h1>
 <?php
 session_start();
 $login = $_COOKIE['username'];
@@ -9,7 +10,13 @@ if ($login) {
  <form method="POST" action="inventory.php">
    <input type="submit" value="Return" name="return"></p>
  </form>
-
+<style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 <?php
 
 //this tells the system that it's no longer just parsing
@@ -98,7 +105,7 @@ if ($db_conn) {
   }
 
   $result = executePlainSQL("select name, count(*), exdate from expiresOn group by name, exdate");
-  echo "<br>Inventory Report: <br>";
+  echo "<br><h2>Inventory Report</h2>";
   echo "<table>";
   echo "<tr><th>Item</th><th>Quantity</th><th>Expiration Date</th></tr>";
 

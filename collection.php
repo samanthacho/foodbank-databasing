@@ -1,12 +1,13 @@
-moneyaddition<p>Welcome: Collection Shift</p>
+
+<h1>Welcome: Collection Shift</h1>
 <?php
 session_start();
 echo "Employee : " . $_COOKIE['username'] . "<br><br>";
  ?>
 
-<p>Add monetary donation below:</p>
-<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<h2>Add monetary donation below</h2>
+<p><font size="2"> &nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Amount&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Medium&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   </font></p>
@@ -17,21 +18,19 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
 <input type="submit" value="insert" name="moneyaddition"></p>
 </form>
 
-<p>Add physical donation below:</p>
-<p>Item Lookup (Please check if item donated is in database):</p>
-<p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</font></p>
+<h2>Add physical donation below</h2>
 <form method="POST" action="collection.php">
 
-  <p><input type="text" name="insItem" size="20">
+  <p>
+    Item Lookup (Please check if item donated is in database):<input type="text" name="insItem" size="20">
     <input type="submit" value="lookup" name="lookitem"></p>
   </form>
 
 <p>Item Add (Only add item if it is not already in database):</p>
 <p><font size="2">
-  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Category (Food or Other)&nbsp;&nbsp;&nbsp;
+  Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Nutritional Value (Enter non-nutritional if not food item)
 </font></p>
 <form method="POST" action="collection.php">
@@ -42,16 +41,17 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
   </form>
 
 <p>Log item donation:</p>
-<p><font size="2"> Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Expiration Date (MM/DD/YYYY)
+<p><font size="2"> &nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Quantity&nbsp;&nbsp;
+  Expiration Date (DD MMM YYYY)
   </font></p>
   <form method="POST" action="collection.php">
     <p><input type="text" name="insIDname" size="20"><input type="text" name="insIDPh" size="12">
       <input type="text" name="insIDItem" size="20">
-      <input type = "text" name="insQuan" size="5"><input type="text" name="insExp" size="33">
+      <input type = "text" name="insQuan" size="7">&nbsp;
+      <input type="text" name="insExp" size="33">
     <input type="submit" value="insert" name="itemadd"></p>
   </form>
 
@@ -59,6 +59,13 @@ echo "Employee : " . $_COOKIE['username'] . "<br><br>";
     <input type="submit" value="Return" name="return">
   </form>
 
+<style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 <?php
 
 //this tells the system that it's no longer just parsing
