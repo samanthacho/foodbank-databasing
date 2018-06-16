@@ -1,16 +1,20 @@
-<p>Welcome! Please enter your credentials.</p>
-<p><font size="2">
-Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Password</font></p>
+<h1>Welcome to KS Food Bank!</h1>
+<p> Please enter your credentials.</p>
+
 <form method="POST" action="login.php">
-<!--refresh page when submit-->
-
-   <p><input type="text" name="insUser" size="20"><input type="text" name="insPass" size="18">
-<!--define two variables to pass the value-->
-
+<p>Username:<input type="text" name="insUser" size="20"><br>
+Password:&nbsp;<input type="text" name="insPass" size="20">
+<br>
+<br>
 <input type="submit" value="Login" name="login"></p>
 </form>
-
+<style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 <?php
 session_start();
 ?>

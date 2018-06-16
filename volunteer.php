@@ -1,24 +1,40 @@
-<?php
+<h1> Welcome to KS Food Bank!</h1>
+
+  <?php
 session_start();
 date_default_timezone_set('America/Los_Angeles');
 $login = $_COOKIE['username'];
 if ($login) {
-  echo "Welcome " . $login . "<br><br>";
+  echo "Welcome " . $login . "<br>";
 }
  ?>
+ <p> Have a wonderful shift!</p>
+
+  
 
  <form method="POST" action="volunteer.php">
-   <input type="submit" value="Generate Inventory Report" name="inventory"></p>
+ COLLECTION SHIFT: <input type="submit" value="Add Donation" name="moneyadd">
  </form>
+
  <form method="POST" action="volunteer.php">
- <input type="submit" value="Add Donation" name="moneyadd">
+ DISTRIBUTION SHIFT: <input type="submit" value="Distribute Items" name="dist">
  </form>
-  <form method="POST" action="volunteer.php">
- <input type="submit" value="Distribute Items" name="dist">
+
+ <form method="POST" action="volunteer.php">
+   <input type="submit" value="Inventory Report" name="inventory"></p>
  </form>
+<br><br>
  <form method="POST" action="volunteer.php">
    <input type="submit" value="Logout" name="logout">
  </form>
+
+ <style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 
 <?php
 

@@ -1,3 +1,4 @@
+<h1> Purchase Log </h1>
 <?php
 session_start();
 date_default_timezone_set('America/Los_Angeles');
@@ -6,22 +7,21 @@ if ($login) {
   echo "Welcome " . $login . "<br><br>";
 }
  ?>
-<p> Record a purchase:</p>
+<h2> Record a purchase</h2>
 
-<p>Item Lookup (Please check if item donated is in database):</p>
-<p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</font></p>
+
 <form method="POST" action="purchase.php">
 
-<p><input type="text" name="insItem" size="20">
+<p>Item Lookup (Please check if item donated is in database):<input type="text" name="insItem" size="20">
  <input type="submit" value="lookup" name="itemlook"></p>
 </form>
 
-<p>Item Add (Only add item if it is not already in database):</p>
+
+<p>Add Item (Only add item if it is not already in database):</p>
 <p><font size="2">
- Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ Category (Food or Other)&nbsp;&nbsp;&nbsp;&nbsp;
+ Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  Nutritional Value (Enter non-nutritional if not food item)
 </font></p>
 <form method="POST" action="purchase.php">
@@ -32,9 +32,9 @@ if ($login) {
  </form>
 
 <p>Enter purchase details:</p>
-<p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Cost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p><font size="2">Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Cost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ Quantity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  Expiration Date
 </font></p>
 <form method = "POST" action="purchase.php">
@@ -47,6 +47,14 @@ if ($login) {
  <form method="POST" action="collection.php">
    <input type="submit" value="Return" name="return">
  </form>
+
+ <style type = "text/css">
+.button-inline form {display:inline;}
+p{font-family: verdana;}
+h1{
+  font-family: verdana;
+}
+</style>
 
 <?php
 session_start();
