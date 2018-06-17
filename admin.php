@@ -123,10 +123,16 @@ get the values-->
 </div>
 
 <p>Delete admin:</p>
-</font></p>
 <form method="POST" action="admin.php">
   <p><input type="text" name="insadmin" size="10">
   <input type="submit" value="Delete" name="deletea">
+</p></form>
+
+<p>Grant employee administrator privileges:</p>
+</font></p>
+<form method="POST" action="admin.php">
+  <p><input type="text" name="insnewadmin" size="10">
+  <input type="submit" value="Grant" name="grantad">
 </p></form>
 
 <p>Find Min/Max Donation Average:</p>
@@ -500,6 +506,11 @@ if ($db_conn) {
         } else
         if (array_key_exists('deletea', $_POST)) {
           $ins = $_POST['insadmin'];
+          $result = executePlainSQL("select * from admin where username = '$ins'");
+          $check = OCI_Fetch_Array($check, OCI_BOTH);
+          if ($check[0] == NULL) {
+            echo "Administrator is not in the system.";
+          } else {
           executePlainSQL("delete from admin where username = '$ins'");
           OCICommit($db_conn);
           echo "Admin deleted.";
@@ -507,7 +518,7 @@ if ($db_conn) {
           $in2 = $login;
           $in3 = "Delete admin user " . $ins . ".";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
-          OCICommit($db_conn);
+          OCICommit($db_conn);}
         } else
         if (array_key_exists('collshow', $_POST)) {
           $result = executePlainSQL("select sdate, length from collection_work e where not exists((select username from employee where username='$login') minus (select username from collection_work where length = e.length and sdate = e.sdate and letter = e.letter))");
@@ -526,6 +537,31 @@ if ($db_conn) {
           $in1 = uniqid();
           $in2 = $login;
           $in3 = "Queried collection report for " . $login . ".";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
+        } else
+        if (array_key_exists('grantad', $_POST)) {
+          $input = $_POST['insnewadmin'];
+          $result = executePlainSQL("select * from employee where username='$input'");
+          $checkemp = OCI_Fetch_Array($result, OCI_BOTH);
+          if ($checkemp[0] == NULL) {
+            echo $input . " not found in system. Request not granted. Please add employee to database.";
+          }
+          else {
+            $result1 = executePlainSQL("select * from admin where username='$input'");
+            $checkad = OCI_Fetch_Array($result1, OCI_BOTH);
+            if ($checkad[0] != NULL) {
+              echo $input . " is already an administrator.";
+            }
+            else {
+              executePlainSQL("insert into admin values ('$input')");
+              echo "Admin privileges granted to " . $input;
+              OCICommit($db_conn);
+            }
+          }
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Attempted to give admin privileges to " . $input . ".";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
           OCICommit($db_conn);
         }
