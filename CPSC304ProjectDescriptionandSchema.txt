@@ -1,4 +1,10 @@
-﻿Schema
+Final Project Description
+Our final project models a food bank. There are two classes of users for this page; administrators and volunteers. Based on the classification of the employee, the login screen will redirect them to the appropriate page upon entering their credentials. A volunteer will be redirected to the volunteer page. Here, they are able to query the inventory of the food bank. If they are on shift, they will be able to access the collections page, to collect donations, and the distribution page, to distribute inventory. If they are not on shift, this will be blocked. The admin users are redirected to a different page, where they have a myriad of different actions possible, including all those available to regular volunteers. Notably, they can add volunteers, grant administrator privileges, make purchases to increase the inventory of the food bank, query the min/max average donations per person at the food bank, assign shifts to volunteers, and many more actions.
+
+In our schema, we made some minor alterations (as seen below), mostly including renaming variables and tables. Notably, we added a table called adreport, which logs the actions of an admin user while they are on the site. It is in a many-to-one relationship with admin, where a single admin can relate to multiple reports, but a report can only reference a single admin. These can be queried to get a report on the actions of the admin while they were on the site, and will be deleted upon deletion of the admin (cascading delete). We also changed the datatypes of auto-generated identification numbers to strings in order to use the PHP function uniqid() to generate the unique IDs, and many of the date attributes in multiple tables to dates instead of numbers. We also changed phone numbers to numbers instead of strings, and restricted names and usernames to 30 characters.
+
+
+Schema
 Money_Collect (did:varchar(255),dname:VARCHAR(30), dphone: number, moneydate: DATE, username: VARCHAR(30), amount: decimal(10,2), medium: VARCHAR(30))
 * Represents: entity set donation, subclass of Donation
 * Primary Key: did
@@ -173,7 +179,3 @@ adreport(prep: VARCHAR(255), username: varchar(30), action varchar(255))
    * Prep → prep, username, action
       * Prep is a unique key to identify all logged actions associated with the admin user
    * Already in BCNF; the only FD is the prep, which determines all other attributes
-
-
-WHAT CHANGED
-We made some minor alterations, mostly including renaming variables and tables. Notably, we added a table called adreport, which logs the actions of an admin user while they are on the site. It is in a many-to-one relationship with admin, where a single admin can relate to multiple reports, but a report can only reference a single admin. These can be queried to get a report on the actions of the admin while they were on the site, and will be deleted upon deletion of the admin (cascading delete). We also changed the datatypes of auto-generated identification numbers to strings in order to use the PHP function uniqid() to generate the unique IDs, and many of the date attributes in multiple tables to dates instead of numbers. We also changed phone numbers to numbers instead of strings, and restricted names and usernames to 30 characters.
