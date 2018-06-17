@@ -11,11 +11,14 @@ SET phone = newphone
 WHERE username = userinput
 
 -- AGGREGATION QUERY ; GROUP BY
-// DISTRIBUTION PAGE : search item shows a list of wanted item along with quantity and expiration date
-SELECT name, count(*), exDate
-FROM expiresOn
-WHERE name = itemlookup
-GROUP BY name, exDate
+// ADMIN PAGE: Find button w/ input - displays Min/max cost of items purchased depending on user input
+SELECT item, max(pamount)
+FROM purchase_make
+GROUP BY item
+
+SELECT item, min(pamount)
+FROM purchase_make
+GROUP BY item
 
 -- JOIN QUERY
 //ADMIN PAGE: purchase report button - displays purchase list w/ amount + buyer

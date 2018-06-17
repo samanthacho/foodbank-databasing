@@ -124,15 +124,21 @@ get the values-->
 
 <p>Delete admin:</p>
 <form method="POST" action="admin.php">
-  <p><input type="text" name="insadmin" size="10">
+  <p><input type="text" name="instodelete" size="10">
   <input type="submit" value="Delete" name="deletea">
 </p></form>
 
 <p>Grant employee administrator privileges:</p>
-</font></p>
 <form method="POST" action="admin.php">
   <p><input type="text" name="insnewadmin" size="10">
   <input type="submit" value="Grant" name="grantad">
+</p></form>
+
+<p>Find Min/Max price of items purchased:</p>
+</font></p>
+<form method="POST" action="admin.php">
+  <p><input type="text" name="insquery" size="10">
+  <input type="submit" value="Find" name="purcost">
 </p></form>
 
 <p>Find Min/Max Donation Average:</p>
@@ -268,7 +274,7 @@ if ($db_conn) {
         } else
         if (array_key_exists('empreport', $_POST)) {
           $field = $_POST['insField'];
-          if ($field = "username" || $field="password" || $field="id" || $field="phone"){
+          if ($field == 'username' || $field=='password' || $field=='id' || $field=='phone'){
           $finder = $_POST['insField'];
           $unametouse = $_POST['insUnameSearch'];
           $result = executePlainSQL("select $finder from employee where username = '$unametouse'");
@@ -411,7 +417,7 @@ if ($db_conn) {
           $checkemp = executePlainSQL("select username from employee where username='$uinput'");
           $emprow = OCI_Fetch_Array($checkemp, OCI_BOTH);
           if ($emprow[0] == NULL) {
-            echo "Employee " . $uinput . "not in database. <br>";
+            echo "Employee " . $uinput . " not in database. <br>";
           } else {
             $tuple = array (
               ":bind1" => $int,
@@ -505,9 +511,9 @@ if ($db_conn) {
           }
         } else
         if (array_key_exists('deletea', $_POST)) {
-          $ins = $_POST['insadmin'];
+          $ins = $_POST['instodelete'];
           $result = executePlainSQL("select * from admin where username = '$ins'");
-          $check = OCI_Fetch_Array($check, OCI_BOTH);
+          $check = OCI_Fetch_Array($result, OCI_BOTH);
           if ($check[0] == NULL) {
             echo "Administrator is not in the system.";
           } else {
@@ -562,6 +568,38 @@ if ($db_conn) {
           $in1 = uniqid();
           $in2 = $login;
           $in3 = "Attempted to give admin privileges to " . $input . ".";
+          executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
+          OCICommit($db_conn);
+        } else
+        if (array_key_exists('purcost', $_POST)) {
+          $input = $_POST['insquery'];
+          if ($input == 'Min') {
+            $result = executePlainSQL("select item, min(pamount) from purchase_make group by item");
+            echo "<br>Minimum purchased item cost:<br>";
+            echo "<table>";
+            echo "<tr><th>Item</th><th>Amount</th></tr>";
+
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+              echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>";
+            }
+            echo "</table>";
+          } else
+          if ($input == 'Max') {
+            $result = executePlainSQL("select item, max(pamount) from purchase_make group by item");
+            echo "<br>Maximum purchased item cost:<br>";
+            echo "<table>";
+            echo "<tr><th>Item</th><th>Amount</th></tr>";
+
+            while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+              echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>";
+            }
+            echo "</table>";
+          } else {
+            echo "Invalid input. Please enter Min or Max.";
+          }
+          $in1 = uniqid();
+          $in2 = $login;
+          $in3 = "Attempted to query cost report.";
           executePlainSQL("insert into adreport values ('$in1', '$in2', '$in3')");
           OCICommit($db_conn);
         }
