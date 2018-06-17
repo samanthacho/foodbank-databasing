@@ -124,7 +124,7 @@ get the values-->
 
 <p>Delete admin:</p>
 <form method="POST" action="admin.php">
-  <p><input type="text" name="insadmin" size="10">
+  <p><input type="text" name="instodelete" size="10">
   <input type="submit" value="Delete" name="deletea">
 </p></form>
 
@@ -511,9 +511,9 @@ if ($db_conn) {
           }
         } else
         if (array_key_exists('deletea', $_POST)) {
-          $ins = $_POST['insadmin'];
+          $ins = $_POST['instodelete'];
           $result = executePlainSQL("select * from admin where username = '$ins'");
-          $check = OCI_Fetch_Array($check, OCI_BOTH);
+          $check = OCI_Fetch_Array($result, OCI_BOTH);
           if ($check[0] == NULL) {
             echo "Administrator is not in the system.";
           } else {
