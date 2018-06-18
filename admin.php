@@ -18,8 +18,8 @@ if ($login) {
 
 <p>Add volunteer below:</p>
 <p><font size="2">&nbsp;Phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Password</font></p>
 <form method="POST" action="admin.php">
 <!--refresh page when submit-->
@@ -274,7 +274,7 @@ if ($db_conn) {
         } else
         if (array_key_exists('empreport', $_POST)) {
           $field = $_POST['insField'];
-          if ($field == 'username' || $field=='password' || $field=='id' || $field=='phone'){
+          if ($field == 'username' || $field=='password' || $field=='name' || $field=='phone'){
           $finder = $_POST['insField'];
           $unametouse = $_POST['insUnameSearch'];
           $result = executePlainSQL("select $finder from employee where username = '$unametouse'");
